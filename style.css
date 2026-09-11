@@ -475,7 +475,7 @@ footer {
 
 .admin-tier-row {
   display: grid;
-  grid-template-columns: 1fr 150px 100px;
+  grid-template-columns: 1fr 150px 100px 70px;
   gap: 9px;
   align-items: center;
   margin-top: 8px;
@@ -558,9 +558,12 @@ footer {
 }
 
 @media (max-width: 620px) {
+  .admin-tier-row { grid-template-columns: 1fr 105px; }
+  .admin-tier-row .delete-tier { grid-column: 1 / -1; }
   .top-actions { gap: 5px; }
   .top-actions .cart-btn { padding: 9px 9px; font-size: 8px; }
-  .admin-tier-row { grid-template-columns: 1fr 105px; }
   .stock-toggle { grid-column: 1 / -1; justify-content: flex-start; }
   .admin-actions { grid-template-columns: 1fr; }
 }
+
+.admin-tier-row .delete-tier { width: 100%; padding: 10px; }\n

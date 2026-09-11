@@ -1,50 +1,27 @@
-const defaultProducts = {
-  "NETFLIX": [
-    { name: "BASIC", price: "Rp5.000", stock: true },
-    { name: "VIP", price: "Rp10.000", stock: true },
-    { name: "RESELLER", price: "Rp25.000", stock: true }
-  ],
-  "CANVA": [
-    { name: "BASIC", price: "Rp5.000", stock: true },
-    { name: "VIP", price: "Rp10.000", stock: true }
-  ],
-  "ALIGHT MOTION": [
-    { name: "VIP 1 TAHUN", price: "Rp2.000", stock: true },
-    { name: "GENERATOR APK", price: "Rp15.000", stock: true }
-  ]
-};
+let products = {};
+let adminToken = sessionStorage.getItem("ndrex_admin_token") || "";
 
-let products = loadProducts();
-let adminLoggedIn = false;
-
-function cloneDefaults() {
-  return JSON.parse(JSON.stringify(defaultProducts));
+async function loadProducts() {
+  const res = await fetch("/api/products");
+  products = await res.json();
 }
 
-function loadProducts() {
-  try {
-    const saved = localStorage.getItem("ndrex_products");
-    if (saved) return JSON.parse(saved);
-  } catch {}
-  return cloneDefaults();
+async function boot() {
+  await loadProducts();
+  renderStoreProducts();
+  typeText();
 }
-
-function saveProducts() {
-  localStorage.setItem("ndrex_products", JSON.stringify(products));
-}
+boot();
 
 const typing = "NDREX PROJECT";
 let i = 0;
-
 function typeText() {
   const el = document.getElementById("typingText");
   if (i < typing.length) {
-    el.textContent += typing.charAt(i);
-    i++;
+    el.textContent += typing.charAt(i++);
     setTimeout(typeText, 105);
   }
 }
-typeText();
 
 function goToStore() {
   document.getElementById("slide1").style.display = "none";
@@ -52,194 +29,171 @@ function goToStore() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+function renderStoreProducts() {
+  const grid = document.querySelector(".product-grid");
+  grid.innerHTML = "";
+  const meta = {
+    "NETFLIX": ["N","STREAMING","Basic • VIP • Reseller"],
+    "CANVA": ["C","DESIGN","Basic • VIP"],
+    "ALIGHT MOTION": ["A","EDITING","VIP 1 Tahun • Generator APK"]
+  };
+  Object.keys(products).forEach((name) => {
+    const [icon, small, desc] = meta[name] || [name[0], "DIGITAL", "Digital product"];
+    const card = document.createElement("button");
+    card.className = "product-card";
+    card.onclick = () => openTiers(name);
+    card.innerHTML = `<div class="product-icon">${icon}</div>
+      <div><small>${small}</small><h3>${name}</h3><p>${desc}</p></div>
+      <span class="arrow">→</span>`;
+    grid.appendChild(card);
+  });
+}
+
 function openTiers(product) {
   const modal = document.getElementById("tierModal");
-  const title = document.getElementById("modalTitle");
+  document.getElementById("modalTitle").textContent = product;
   const list = document.getElementById("tierList");
-
-  title.textContent = product;
   list.innerHTML = "";
 
-  products[product].forEach(item => {
+  (products[product] || []).forEach(item => {
     const button = document.createElement("button");
     button.className = "tier" + (item.stock ? "" : " sold-out");
     button.disabled = !item.stock;
-    button.innerHTML = `
-      <span class="tier-name">${item.name}</span>
-      <span class="tier-price">${item.price}</span>
-      ${item.stock ? "" : '<span class="sold-label">HABIS</span>'}
-    `;
-    if (item.stock) {
-      button.onclick = () => openPayment(item.name, product, item.price);
-    }
+    button.innerHTML = `<span class="tier-name">${escapeHtml(item.name)}</span>
+      <span class="tier-price">${escapeHtml(item.price)}</span>
+      ${item.stock ? "" : '<span class="sold-label">HABIS</span>'}`;
+    if (item.stock) button.onclick = () => openPayment(item.name, product, item.price);
     list.appendChild(button);
   });
-
   modal.classList.add("show");
 }
 
-function closeModal() {
-  document.getElementById("tierModal").classList.remove("show");
-}
-
-function openPayment() {
-  closeModal();
-  document.getElementById("paymentModal").classList.add("show");
-}
-
-function closePayment() {
-  document.getElementById("paymentModal").classList.remove("show");
-}
+function closeModal() { document.getElementById("tierModal").classList.remove("show"); }
+function openPayment() { closeModal(); document.getElementById("paymentModal").classList.add("show"); }
+function closePayment() { document.getElementById("paymentModal").classList.remove("show"); }
 
 async function copyNumber() {
   const number = "085718558667";
-  try {
-    await navigator.clipboard.writeText(number);
-    document.getElementById("copyStatus").textContent = "Tersalin ✓";
-  } catch {
-    document.getElementById("copyStatus").textContent = number;
-  }
-  setTimeout(() => {
-    document.getElementById("copyStatus").textContent = "";
-  }, 2000);
+  await navigator.clipboard.writeText(number).catch(()=>{});
+  document.getElementById("copyStatus").textContent = "Tersalin ✓";
+  setTimeout(() => document.getElementById("copyStatus").textContent = "", 2000);
 }
 
-/* ADMIN */
 function openAdminLogin() {
   document.getElementById("adminPassword").value = "";
+  document.getElementById("adminEmail").value = "";
   document.getElementById("adminError").textContent = "";
   document.getElementById("adminLoginModal").classList.add("show");
-  setTimeout(() => document.getElementById("adminPassword").focus(), 100);
 }
+function closeAdminLogin() { document.getElementById("adminLoginModal").classList.remove("show"); }
 
-function closeAdminLogin() {
-  document.getElementById("adminLoginModal").classList.remove("show");
-}
-
-function loginAdmin() {
+async function loginAdmin() {
+  const email = document.getElementById("adminEmail").value.trim();
   const password = document.getElementById("adminPassword").value;
-  // Ganti password ini sebelum website dipublikasikan.
-  const ADMIN_PASSWORD = "ndrex123";
-
-  if (password !== ADMIN_PASSWORD) {
-    document.getElementById("adminError").textContent = "Password salah.";
-    return;
-  }
-
-  adminLoggedIn = true;
-  closeAdminLogin();
-  renderAdmin();
-  document.getElementById("adminModal").classList.add("show");
+  const err = document.getElementById("adminError");
+  err.textContent = "";
+  try {
+    const res = await fetch("/api/login", {
+      method: "POST", headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({email, password})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Login gagal");
+    adminToken = data.token;
+    sessionStorage.setItem("ndrex_admin_token", adminToken);
+    closeAdminLogin();
+    await loadProducts();
+    renderAdmin();
+    document.getElementById("adminModal").classList.add("show");
+  } catch (e) { err.textContent = e.message; }
 }
 
 function renderAdmin() {
   const container = document.getElementById("adminProducts");
   container.innerHTML = "";
-
   Object.entries(products).forEach(([productName, tiers]) => {
     const section = document.createElement("div");
     section.className = "admin-product";
-
-    const title = document.createElement("div");
-    title.className = "admin-product-title";
-    title.textContent = productName;
-    section.appendChild(title);
-
-    tiers.forEach((item, index) => {
+    section.innerHTML = `<div class="admin-product-title">${escapeHtml(productName)}</div>`;
+    tiers.forEach(item => {
       const row = document.createElement("div");
       row.className = "admin-tier-row";
-      row.innerHTML = `
-        <input class="admin-tier-name" value="${escapeHtml(item.name)}" data-product="${productName}" data-index="${index}">
-        <input class="admin-tier-price" value="${escapeHtml(item.price)}" data-product="${productName}" data-index="${index}">
-        <label class="stock-toggle">
-          <input type="checkbox" class="admin-stock" ${item.stock ? "checked" : ""} data-product="${productName}" data-index="${index}">
-          Stok tersedia
-        </label>
-      `;
+      row.innerHTML = `<input class="admin-tier-name" value="${escapeHtml(item.name)}">
+        <input class="admin-tier-price" value="${escapeHtml(item.price)}">
+        <label class="stock-toggle"><input type="checkbox" class="admin-stock" ${item.stock ? "checked":""}> Stok tersedia</label>
+        <button class="copy-btn delete-tier" data-id="${item.id}">HAPUS</button>`;
+      row.querySelector(".admin-tier-name").dataset.id = item.id;
+      row.querySelector(".admin-tier-price").dataset.id = item.id;
+      row.querySelector(".admin-stock").dataset.id = item.id;
+      row.querySelector(".delete-tier").onclick = () => deleteTier(item.id);
       section.appendChild(row);
     });
-
     container.appendChild(section);
   });
 }
 
-function saveAdminData() {
-  if (!adminLoggedIn) return;
-
-  document.querySelectorAll(".admin-tier-name").forEach(input => {
-    const p = input.dataset.product;
-    const idx = Number(input.dataset.index);
-    products[p][idx].name = input.value.trim() || products[p][idx].name;
-  });
-
-  document.querySelectorAll(".admin-tier-price").forEach(input => {
-    const p = input.dataset.product;
-    const idx = Number(input.dataset.index);
-    products[p][idx].price = input.value.trim() || products[p][idx].price;
-  });
-
-  document.querySelectorAll(".admin-stock").forEach(input => {
-    const p = input.dataset.product;
-    const idx = Number(input.dataset.index);
-    products[p][idx].stock = input.checked;
-  });
-
-  saveProducts();
-
-  const saved = document.getElementById("adminSaved");
-  saved.textContent = "Perubahan berhasil disimpan ✓";
-  setTimeout(() => saved.textContent = "", 2200);
+async function saveAdminData() {
+  const rows = [...document.querySelectorAll(".admin-tier-row")];
+  try {
+    for (const row of rows) {
+      const name = row.querySelector(".admin-tier-name");
+      const price = row.querySelector(".admin-tier-price");
+      const stock = row.querySelector(".admin-stock");
+      const res = await fetch(`/api/tiers/${name.dataset.id}`, {
+        method: "PUT",
+        headers: {"Content-Type":"application/json", "Authorization": `Bearer ${adminToken}`},
+        body: JSON.stringify({name:name.value, price:price.value, stock:stock.checked})
+      });
+      if (res.status === 401) throw new Error("Sesi admin habis. Login lagi.");
+      if (!res.ok) throw new Error("Gagal menyimpan perubahan.");
+    }
+    await loadProducts();
+    renderStoreProducts();
+    renderAdmin();
+    document.getElementById("adminSaved").textContent = "Perubahan tersimpan ke database ✓";
+    setTimeout(()=>document.getElementById("adminSaved").textContent="",2500);
+  } catch(e) {
+    document.getElementById("adminSaved").textContent = e.message;
+  }
 }
 
-function resetAdminData() {
-  products = cloneDefaults();
-  saveProducts();
+async function deleteTier(id) {
+  if (!confirm("Hapus tier ini?")) return;
+  const res = await fetch(`/api/tiers/${id}`, {
+    method:"DELETE", headers:{"Authorization":`Bearer ${adminToken}`}
+  });
+  if (res.status === 401) return logoutAdmin();
+  if (!res.ok) return alert("Gagal menghapus tier.");
+  await loadProducts();
+  renderStoreProducts();
   renderAdmin();
-
-  const saved = document.getElementById("adminSaved");
-  saved.textContent = "Data kembali ke harga/stok default.";
-  setTimeout(() => saved.textContent = "", 2200);
 }
 
 function logoutAdmin() {
-  adminLoggedIn = false;
+  adminToken = "";
+  sessionStorage.removeItem("ndrex_admin_token");
   closeAdmin();
 }
 
-function closeAdmin() {
-  document.getElementById("adminModal").classList.remove("show");
-}
+function closeAdmin() { document.getElementById("adminModal").classList.remove("show"); }
 
 function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+  return String(value).replaceAll("&","&amp;").replaceAll("<","&lt;")
+    .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
 
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
-    closeModal();
-    closePayment();
-    closeAdminLogin();
-    closeAdmin();
+    closeModal(); closePayment(); closeAdminLogin(); closeAdmin();
   }
 });
-
-document.getElementById("tierModal").addEventListener("click", e => {
-  if (e.target.id === "tierModal") closeModal();
-});
-
-document.getElementById("paymentModal").addEventListener("click", e => {
-  if (e.target.id === "paymentModal") closePayment();
-});
-
-document.getElementById("adminLoginModal").addEventListener("click", e => {
-  if (e.target.id === "adminLoginModal") closeAdminLogin();
-});
-
-document.getElementById("adminModal").addEventListener("click", e => {
-  if (e.target.id === "adminModal") closeAdmin();
-});
+for (const id of ["tierModal","paymentModal","adminLoginModal","adminModal"]) {
+  document.getElementById(id).addEventListener("click", e => {
+    if (e.target.id === id) {
+      if (id === "tierModal") closeModal();
+      if (id === "paymentModal") closePayment();
+      if (id === "adminLoginModal") closeAdminLogin();
+      if (id === "adminModal") closeAdmin();
+    }
+  });
+}
