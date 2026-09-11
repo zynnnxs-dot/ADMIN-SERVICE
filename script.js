@@ -28,3 +28,31 @@ function confirmPayment(){
   );
   window.open("https://wa.me/6285715559734?text=" + message, "_blank");
 }
+
+/* ===== CLICK / TRANSITION ANIMATIONS ===== */
+const transitionEl = document.getElementById("pageTransition");
+const rippleLayer = document.getElementById("clickRipples");
+
+function playTransition(){
+  transitionEl.classList.remove("active");
+  void transitionEl.offsetWidth;
+  transitionEl.classList.add("active");
+  setTimeout(()=>transitionEl.classList.remove("active"),700);
+}
+
+document.addEventListener("click", (e)=>{
+  const target = e.target.closest("button, .intro");
+  if(!target) return;
+  const ripple = document.createElement("span");
+  ripple.className = "click-ripple";
+  ripple.style.left = e.clientX + "px";
+  ripple.style.top = e.clientY + "px";
+  rippleLayer.appendChild(ripple);
+  setTimeout(()=>ripple.remove(),700);
+});
+
+const originalGoToStore = goToStore;
+goToStore = function(){
+  playTransition();
+  setTimeout(originalGoToStore,160);
+};
