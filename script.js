@@ -1,161 +1,23 @@
-let products = {};
-let adminToken = sessionStorage.getItem("ndrex_admin_token") || "";
-
-async function loadProducts() {
-  const res = await fetch("/api/products");
-  if (!res.ok) throw new Error("Gagal mengambil produk.");
-  products = await res.json();
-}
-
-const typing = "NDREX PROJECT";
-let i = 0;
-function typeText() {
-  const el = document.getElementById("typingText");
-  if (i < typing.length) {
-    el.textContent += typing.charAt(i++);
-    setTimeout(typeText, 105);
-  }
-}
-function startIntro() {
-  typeText();
-  loadProducts().catch(console.error);
-}
-startIntro();
-
-function goToStore() {
-  document.getElementById("slide1").style.display = "none";
-  document.getElementById("slide2").classList.add("show");
-  renderStoreProducts();
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function renderStoreProducts() {
-  const grid=document.querySelector(".product-grid");
-  if(!grid) return;
-  const meta={"NETFLIX":["N","STREAMING","Basic • VIP • Reseller"],
-              "CANVA":["C","DESIGN","Basic • VIP"],
-              "ALIGHT MOTION":["A","EDITING","VIP 1 Tahun • Generator APK"]};
-  grid.innerHTML="";
-  Object.keys(meta).forEach(name=>{
-    const [icon,small,desc]=meta[name];
-    const b=document.createElement("button");
-    b.className="product-card";
-    b.onclick=()=>openTiers(name);
-    b.innerHTML=`<div class="product-icon">${icon}</div><div><small>${small}</small><h3>${name}</h3><p>${desc}</p></div><span class="arrow">→</span>`;
-    grid.appendChild(b);
-  });
-}
-
-function openTiers(product) {
-  const list=document.getElementById("tierList");
-  document.getElementById("modalTitle").textContent=product;
-  list.innerHTML="";
-  (products[product]||[]).forEach(item=>{
-    const b=document.createElement("button");
-    b.className="tier"+(item.stock?"":" sold-out");
-    b.disabled=!item.stock;
-    b.innerHTML=`<span class="tier-name">${escapeHtml(item.name)}</span><span class="tier-price">${escapeHtml(item.price)}</span>${item.stock?"":'<span class="sold-label">HABIS</span>'}`;
-    if(item.stock) b.onclick=()=>openPayment();
-    list.appendChild(b);
-  });
-  document.getElementById("tierModal").classList.add("show");
-}
-function closeModal(){document.getElementById("tierModal").classList.remove("show");}
-function openPayment(){closeModal();document.getElementById("paymentModal").classList.add("show");}
-function closePayment(){document.getElementById("paymentModal").classList.remove("show");}
-
-async function copyNumber(){
-  try{await navigator.clipboard.writeText("085718558667");}catch{}
-  document.getElementById("copyStatus").textContent="Tersalin ✓";
-  setTimeout(()=>document.getElementById("copyStatus").textContent="",2000);
-}
-
-/* REAL ADMIN LOGIN */
-function openAdminLogin(){
-  document.getElementById("adminEmail").value="";
-  document.getElementById("adminPassword").value="";
-  document.getElementById("adminError").textContent="";
-  document.getElementById("adminLoginModal").classList.add("show");
-}
-function closeAdminLogin(){document.getElementById("adminLoginModal").classList.remove("show");}
-
-async function loginAdmin(){
-  const email=document.getElementById("adminEmail").value.trim();
-  const password=document.getElementById("adminPassword").value;
-  try{
-    const res=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
-    const data=await res.json();
-    if(!res.ok) throw new Error(data.error||"Login gagal.");
-    adminToken=data.token;
-    sessionStorage.setItem("ndrex_admin_token",adminToken);
-    closeAdminLogin();
-    await loadProducts();
-    renderAdmin();
-    document.getElementById("adminModal").classList.add("show");
-  }catch(e){document.getElementById("adminError").textContent=e.message;}
-}
-
-function renderAdmin(){
-  const c=document.getElementById("adminProducts");
-  c.innerHTML="";
-  Object.entries(products).forEach(([p,tiers])=>{
-    const section=document.createElement("div");
-    section.className="admin-product";
-    section.innerHTML=`<div class="admin-product-title">${escapeHtml(p)}</div>`;
-    tiers.forEach(item=>{
-      const row=document.createElement("div");
-      row.className="admin-tier-row";
-      row.innerHTML=`<input class="admin-tier-name" data-id="${item.id}" value="${escapeHtml(item.name)}">
-        <input class="admin-tier-price" data-id="${item.id}" value="${escapeHtml(item.price)}">
-        <label class="stock-toggle"><input class="admin-stock" data-id="${item.id}" type="checkbox" ${item.stock?"checked":""}> Stok tersedia</label>
-        <button class="copy-btn delete-tier">HAPUS</button>`;
-      row.querySelector(".delete-tier").onclick=()=>deleteTier(item.id);
-      section.appendChild(row);
-    });
-    c.appendChild(section);
-  });
-}
-
-async function saveAdminData(){
-  try{
-    const rows=[...document.querySelectorAll(".admin-tier-row")];
-    for(const row of rows){
-      const name=row.querySelector(".admin-tier-name"),price=row.querySelector(".admin-tier-price"),stock=row.querySelector(".admin-stock");
-      const res=await fetch(`/api/tiers/${name.dataset.id}`,{
-        method:"PUT",headers:{"Content-Type":"application/json","Authorization":`Bearer ${adminToken}`},
-        body:JSON.stringify({name:name.value,price:price.value,stock:stock.checked})
-      });
-      if(res.status===401){logoutAdmin();throw new Error("Sesi admin habis.");}
-      if(!res.ok) throw new Error("Gagal menyimpan.");
-    }
-    await loadProducts(); renderStoreProducts(); renderAdmin();
-    document.getElementById("adminSaved").textContent="Tersimpan ke database ✓";
-    setTimeout(()=>document.getElementById("adminSaved").textContent="",2200);
-  }catch(e){document.getElementById("adminSaved").textContent=e.message;}
-}
-
-async function deleteTier(id){
-  if(!confirm("Hapus tier ini?")) return;
-  const res=await fetch(`/api/tiers/${id}`,{method:"DELETE",headers:{"Authorization":`Bearer ${adminToken}`}});
-  if(res.status===401){logoutAdmin();return;}
-  if(!res.ok){alert("Gagal menghapus.");return;}
-  await loadProducts(); renderStoreProducts(); renderAdmin();
-}
-
-function logoutAdmin(){adminToken="";sessionStorage.removeItem("ndrex_admin_token");closeAdmin();}
-function closeAdmin(){document.getElementById("adminModal").classList.remove("show");}
-
-function escapeHtml(v){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
-
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"){closeModal();closePayment();closeAdminLogin();closeAdmin();}
-});
-["tierModal","paymentModal","adminLoginModal","adminModal"].forEach(id=>{
-  document.getElementById(id).addEventListener("click",e=>{
-    if(e.target.id!==id)return;
-    if(id==="tierModal")closeModal();
-    if(id==="paymentModal")closePayment();
-    if(id==="adminLoginModal")closeAdminLogin();
-    if(id==="adminModal")closeAdmin();
-  });
-});
+const defaults={
+"NETFLIX":[["BASIC","Rp5.000",true],["VIP","Rp10.000",true],["RESELLER","Rp25.000",true]],
+"CANVA":[["BASIC","Rp5.000",true],["VIP","Rp10.000",true]],
+"ALIGHT MOTION":[["VIP 1 TAHUN","Rp2.000",true],["GENERATOR APK","Rp15.000",true]]
+};
+let products=load(),admin=false;
+function load(){try{let x=localStorage.getItem("ndrex_products");return x?JSON.parse(x):structuredClone(defaults)}catch{return structuredClone(defaults)}}
+function type(){let s="NDREX PROJECT",i=0,e=document.getElementById("typingText");(function t(){if(i<s.length){e.textContent+=s[i++];setTimeout(t,105)}})()}type();
+function goToStore(){document.getElementById("slide1").style.display="none";document.getElementById("slide2").classList.add("show");window.scrollTo(0,0)}
+function openTiers(p){modal("tierModal");document.getElementById("modalTitle").textContent=p;let l=document.getElementById("tierList");l.innerHTML="";products[p].forEach(x=>{let b=document.createElement("button");b.className="tier";b.disabled=!x[2];b.innerHTML=`<span>${x[0]}</span><span class="tier-price">${x[1]}${x[2]?"":" • HABIS"}</span>`;if(x[2])b.onclick=openPayment;l.appendChild(b)})}
+function modal(id){document.getElementById(id).classList.add("show")}
+function closeModal(){document.getElementById("tierModal").classList.remove("show")}
+function openPayment(){closeModal();modal("paymentModal")} function closePayment(){document.getElementById("paymentModal").classList.remove("show")}
+async function copyNumber(){try{await navigator.clipboard.writeText("085718558667");document.getElementById("copyStatus").textContent=" Tersalin ✓"}catch{}setTimeout(()=>document.getElementById("copyStatus").textContent="",1800)}
+function openAdminLogin(){document.getElementById("adminPassword").value="";document.getElementById("adminError").textContent="";modal("adminLoginModal")}
+function closeAdminLogin(){document.getElementById("adminLoginModal").classList.remove("show")}
+function loginAdmin(){if(document.getElementById("adminPassword").value!=="ndrex123"){document.getElementById("adminError").textContent="Password salah.";return}admin=true;closeAdminLogin();renderAdmin();modal("adminModal")}
+function renderAdmin(){let c=document.getElementById("adminProducts");c.innerHTML="";Object.entries(products).forEach(([p,arr])=>{let s=document.createElement("div");s.className="admin-section";s.innerHTML=`<h3>${p}</h3>`;arr.forEach((x,i)=>s.innerHTML+=`<div class="admin-row"><input class="an" data-p="${p}" data-i="${i}" value="${esc(x[0])}"><input class="ap" data-p="${p}" data-i="${i}" value="${esc(x[1])}"><label class="admin-stock"><input type="checkbox" class="as" data-p="${p}" data-i="${i}" ${x[2]?"checked":""}> STOK</label></div>`);c.appendChild(s)})}
+function saveAdminData(){document.querySelectorAll(".an").forEach(e=>products[e.dataset.p][e.dataset.i][0]=e.value);document.querySelectorAll(".ap").forEach(e=>products[e.dataset.p][e.dataset.i][1]=e.value);document.querySelectorAll(".as").forEach(e=>products[e.dataset.p][e.dataset.i][2]=e.checked);localStorage.setItem("ndrex_products",JSON.stringify(products));document.getElementById("adminSaved").textContent="Perubahan tersimpan ✓";setTimeout(()=>document.getElementById("adminSaved").textContent="",1800)}
+function resetAdminData(){products=structuredClone(defaults);localStorage.setItem("ndrex_products",JSON.stringify(products));renderAdmin()}
+function closeAdmin(){document.getElementById("adminModal").classList.remove("show")}
+function esc(x){return String(x).replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closePayment();closeAdminLogin();closeAdmin()}})

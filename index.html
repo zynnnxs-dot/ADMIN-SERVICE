@@ -1,196 +1,122 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NDREX PROJECT</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NDREX PROJECT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="stars"></div>
+<div class="stars"></div>
 
-  <!-- SLIDE 1 -->
-  <section id="slide1" class="slide intro active" onclick="goToStore()">
-    <div class="moon"></div>
-    <div class="intro-content">
-      <div class="eyebrow">DIGITAL STORE</div>
-      <h1 id="typingText"></h1><span class="cursor">|</span>
-      <p>Klik di mana saja untuk masuk</p>
-      <div class="enter-hint">CLICK TO ENTER</div>
+<section id="slide1" class="intro" onclick="goToStore()">
+  <div class="moon"></div>
+  <div class="intro-content">
+    <div class="eyebrow">DIGITAL STORE</div>
+    <h1 id="typingText"></h1><span class="cursor">|</span>
+    <p>Klik di mana saja untuk masuk</p>
+    <div class="enter-hint">CLICK TO ENTER</div>
+  </div>
+</section>
+
+<section id="slide2" class="store">
+  <header class="topbar">
+    <div class="brand">NDREX <span>PROJECT</span></div>
+    <div class="top-actions">
+      <button class="top-btn" onclick="openPayment()">PEMBAYARAN</button>
+      <button class="top-btn" onclick="openAdminLogin()">ADMIN</button>
     </div>
-    <div class="scroll-line"></div>
-  </section>
+  </header>
 
-  <!-- SLIDE 2 -->
-  <section id="slide2" class="slide store">
-    <header class="topbar">
-      <div class="brand">NDREX <span>PROJECT</span></div>
-      <div class="top-actions"><div class="top-actions"><button class="cart-btn" onclick="openPayment()">PEMBAYARAN</button><button class="cart-btn" onclick="openAdminLogin()">ADMIN</button></div><button class="cart-btn admin-trigger" onclick="openAdminLogin()">ADMIN</button></div>
-    </header>
-
-    <main class="store-content">
-      <div class="hero-copy">
-        <div class="eyebrow">WELCOME TO THE NIGHT</div>
-        <h2>Choose Your<br><span>Digital Product.</span></h2>
-        <p>Pilih aplikasi yang kamu butuhkan, lalu tentukan tier yang ingin dibeli.</p>
-      </div>
-
-      <div class="product-grid">
-        <button class="product-card netflix" onclick="openTiers('NETFLIX')">
-          <div class="product-icon">N</div>
-          <div>
-            <small>STREAMING</small>
-            <h3>NETFLIX</h3>
-            <p>Basic • VIP • Reseller</p>
-          </div>
-          <span class="arrow">→</span>
-        </button>
-
-        <button class="product-card canva" onclick="openTiers('CANVA')">
-          <div class="product-icon">C</div>
-          <div>
-            <small>DESIGN</small>
-            <h3>CANVA</h3>
-            <p>Basic • VIP</p>
-          </div>
-          <span class="arrow">→</span>
-        </button>
-
-        <button class="product-card alight" onclick="openTiers('ALIGHT MOTION')">
-          <div class="product-icon">A</div>
-          <div>
-            <small>EDITING</small>
-            <h3>ALIGHT MOTION</h3>
-            <p>VIP 1 Tahun • Generator APK</p>
-          </div>
-          <span class="arrow">→</span>
-        </button>
-      </div>
-    </main>
-
-    <footer>© 2026 NDREX PROJECT — DIGITAL STORE</footer>
-  </section>
-
-  <!-- TIER MODAL -->
-  <div id="tierModal" class="modal">
-    <div class="modal-box">
-      <button class="close" onclick="closeModal()">×</button>
-      <div class="eyebrow">SELECT TIER</div>
-      <h2 id="modalTitle">NETFLIX</h2>
-      <div id="tierList" class="tier-list"></div>
+  <!-- VIDEO ANIMATION -->
+  <div class="video-hero">
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="hero.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+    <div class="video-content">
+      <div class="eyebrow">WELCOME TO NDREX</div>
+      <h2>ENTER THE<br><span>DARK NIGHT.</span></h2>
+      <p>Premium digital products, simple and fast.</p>
     </div>
+    <div class="video-badge">AUTO PLAY • MUTED</div>
   </div>
 
-  <!-- PAYMENT MODAL -->
-  <div id="paymentModal" class="modal">
-    <div class="modal-box payment-box">
-      <button class="close" onclick="closePayment()">×</button>
-      <div class="eyebrow">PAYMENT</div>
-      <h2>Pembayaran</h2>
-
-      <div class="payment-method">
-        <div class="payment-label">QRIS</div>
-        <div class="qris-placeholder">
-          <div>QRIS</div>
-          <small>Tempat QRIS kamu</small>
-        </div>
-        <p>Upload gambar QRIS kamu ke folder website lalu ganti bagian <b>qris-placeholder</b> di HTML dengan gambar QRIS.</p>
-      </div>
-
-      <div class="payment-method transfer">
-        <div class="payment-label">TRANSFER</div>
-        <div class="phone">0857 1855 8667</div>
-        <button class="copy-btn" onclick="copyNumber()">SALIN NOMOR</button>
-        <span id="copyStatus"></span>
-      </div>
-
-      <div class="order-note">
-        Setelah transfer, simpan bukti pembayaran dan hubungi admin untuk proses pesanan.
-      </div>
+  <main class="store-content">
+    <div class="hero-copy">
+      <div class="eyebrow">OUR PRODUCTS</div>
+      <h2>Choose Your<br><span>Digital Product.</span></h2>
+      <p>Pilih aplikasi yang kamu butuhkan, lalu tentukan tier yang ingin dibeli.</p>
     </div>
-  </div>
 
-
-  <!-- ADMIN LOGIN -->
-  <div id="adminLoginModal" class="modal">
-    <div class="modal-box admin-login-box">
-      <button class="close" onclick="closeAdminLogin()">×</button>
-      <div class="eyebrow">PRIVATE AREA</div>
-      <h2>Admin Login</h2>
-      <p class="admin-help">Masuk untuk mengatur produk, harga, dan stok.</p>
-      <input id="adminPassword" class="admin-input" type="password" placeholder="Password admin" autocomplete="off">
-      <button class="admin-main-btn" onclick="loginAdmin()">MASUK</button>
-      <div id="adminError" class="admin-error"></div>
+    <div class="product-grid">
+      <button class="product-card" onclick="openTiers('NETFLIX')">
+        <div class="icon">N</div><small>STREAMING</small><h3>NETFLIX</h3><p>Basic • VIP • Reseller</p><b>→</b>
+      </button>
+      <button class="product-card" onclick="openTiers('CANVA')">
+        <div class="icon">C</div><small>DESIGN</small><h3>CANVA</h3><p>Basic • VIP</p><b>→</b>
+      </button>
+      <button class="product-card" onclick="openTiers('ALIGHT MOTION')">
+        <div class="icon">A</div><small>EDITING</small><h3>ALIGHT MOTION</h3><p>VIP 1 Tahun • Generator APK</p><b>→</b>
+      </button>
     </div>
+  </main>
+  <footer>© 2026 NDREX PROJECT — DIGITAL STORE</footer>
+</section>
+
+<div id="tierModal" class="modal">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal()">×</button>
+    <div class="eyebrow">SELECT TIER</div>
+    <h2 id="modalTitle"></h2>
+    <div id="tierList" class="tier-list"></div>
   </div>
+</div>
 
-  <!-- ADMIN DASHBOARD -->
-  <div id="adminModal" class="modal">
-    <div class="modal-box admin-dashboard">
-      <button class="close" onclick="closeAdmin()">×</button>
-      <div class="eyebrow">DASHBOARD</div>
-      <div class="admin-head">
-        <div>
-          <h2>NDREX ADMIN</h2>
-          <p class="admin-help">Kelola produk langsung dari browser.</p>
-        </div>
-        <button class="copy-btn" onclick="logoutAdmin()">KELUAR</button>
-      </div>
-
-      <div id="adminProducts" class="admin-products"></div>
-
-      <div class="admin-actions">
-        <button class="admin-main-btn" onclick="saveAdminData()">SIMPAN PERUBAHAN</button>
-        <button class="copy-btn" onclick="resetAdminData()">RESET DEFAULT</button>
-      </div>
-      <div id="adminSaved" class="admin-saved"></div>
-
-      <div class="admin-info">
-        <b>Catatan:</b> perubahan disimpan di <code>localStorage</code> browser ini. Untuk website online multi-device,
-        nanti kita bisa sambungkan ke database/backend.
-      </div>
+<div id="paymentModal" class="modal">
+  <div class="modal-box">
+    <button class="close" onclick="closePayment()">×</button>
+    <div class="eyebrow">PAYMENT</div><h2>Pembayaran</h2>
+    <div class="payment-card">
+      <label>QRIS</label>
+      <div class="qris-placeholder">QRIS<br><small>Slot QRIS</small></div>
     </div>
-  </div>
-
-
-  <!-- ADMIN LOGIN -->
-  <div id="adminLoginModal" class="modal">
-    <div class="modal-box admin-login-box">
-      <button class="close" onclick="closeAdminLogin()">×</button>
-      <div class="eyebrow">PRIVATE AREA</div>
-      <h2>Admin Login</h2>
-      <p class="admin-help">Masuk menggunakan akun admin.</p>
-      <input id="adminEmail" class="admin-input" type="email" placeholder="Email admin" autocomplete="username">
-      <input id="adminPassword" class="admin-input" type="password" placeholder="Password" autocomplete="current-password">
-      <button class="admin-main-btn" onclick="loginAdmin()">MASUK</button>
-      <div id="adminError" class="admin-error"></div>
+    <div class="payment-card">
+      <label>TRANSFER</label>
+      <div class="phone">0857 1855 8667</div>
+      <button class="copy-btn" onclick="copyNumber()">SALIN NOMOR</button>
+      <span id="copyStatus"></span>
     </div>
+    <p class="note">Setelah transfer, simpan bukti pembayaran dan hubungi admin.</p>
   </div>
+</div>
 
-  <!-- ADMIN DASHBOARD -->
-  <div id="adminModal" class="modal">
-    <div class="modal-box admin-dashboard">
-      <button class="close" onclick="closeAdmin()">×</button>
-      <div class="eyebrow">DASHBOARD</div>
-      <div class="admin-head">
-        <div>
-          <h2>NDREX ADMIN</h2>
-          <p class="admin-help">Kelola harga dan stok produk.</p>
-        </div>
-        <button class="copy-btn" onclick="logoutAdmin()">KELUAR</button>
-      </div>
-      <div id="adminProducts" class="admin-products"></div>
-      <div class="admin-actions">
-        <button class="admin-main-btn" onclick="saveAdminData()">SIMPAN PERUBAHAN</button>
-      </div>
-      <div id="adminSaved" class="admin-saved"></div>
-      <div class="admin-info"><b>Database:</b> perubahan disimpan ke PostgreSQL di server.</div>
-    </div>
+<div id="adminLoginModal" class="modal">
+  <div class="modal-box small">
+    <button class="close" onclick="closeAdminLogin()">×</button>
+    <div class="eyebrow">PRIVATE AREA</div><h2>Admin Login</h2>
+    <input id="adminPassword" class="admin-input" type="password" placeholder="Password admin">
+    <button class="main-btn" onclick="loginAdmin()">MASUK</button>
+    <div id="adminError" class="error"></div>
   </div>
+</div>
 
-  <script src="script.js"></script>
+<div id="adminModal" class="modal">
+  <div class="modal-box admin-box">
+    <button class="close" onclick="closeAdmin()">×</button>
+    <div class="eyebrow">DASHBOARD</div>
+    <h2>NDREX ADMIN</h2>
+    <div id="adminProducts"></div>
+    <button class="main-btn" onclick="saveAdminData()">SIMPAN PERUBAHAN</button>
+    <button class="copy-btn full" onclick="resetAdminData()">RESET DEFAULT</button>
+    <div id="adminSaved" class="saved"></div>
+    <p class="note">Admin demo ini menyimpan data di browser (localStorage). Password demo: <b>ndrex123</b>.</p>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
