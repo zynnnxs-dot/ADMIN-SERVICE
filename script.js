@@ -21,3 +21,10 @@ function resetAdminData(){products=structuredClone(defaults);localStorage.setIte
 function closeAdmin(){document.getElementById("adminModal").classList.remove("show")}
 function esc(x){return String(x).replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closePayment();closeAdminLogin();closeAdmin()}})
+
+function confirmPayment(){
+  const message = encodeURIComponent(
+    "Halo admin NDREX PROJECT, saya ingin konfirmasi pembelian. Saya sudah melakukan pembayaran dan akan mengirimkan bukti pembayaran."
+  );
+  window.open("https://wa.me/6285715559734?text=" + message, "_blank");
+}
