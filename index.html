@@ -28,7 +28,7 @@
   <section id="slide2" class="slide store">
     <header class="topbar">
       <div class="brand">NDREX <span>PROJECT</span></div>
-      <div class="top-actions"><button class="cart-btn" onclick="openPayment()">PEMBAYARAN</button><button class="cart-btn admin-trigger" onclick="openAdminLogin()">ADMIN</button></div>
+      <div class="top-actions"><div class="top-actions"><button class="cart-btn" onclick="openPayment()">PEMBAYARAN</button><button class="cart-btn" onclick="openAdminLogin()">ADMIN</button></div><button class="cart-btn admin-trigger" onclick="openAdminLogin()">ADMIN</button></div>
     </header>
 
     <main class="store-content">
@@ -121,8 +121,7 @@
       <div class="eyebrow">PRIVATE AREA</div>
       <h2>Admin Login</h2>
       <p class="admin-help">Masuk untuk mengatur produk, harga, dan stok.</p>
-      <input id="adminEmail" class="admin-input" type="email" placeholder="Email admin" autocomplete="username">
-      <input id="adminPassword" class="admin-input" type="password" placeholder="Password admin" autocomplete="current-password">
+      <input id="adminPassword" class="admin-input" type="password" placeholder="Password admin" autocomplete="off">
       <button class="admin-main-btn" onclick="loginAdmin()">MASUK</button>
       <div id="adminError" class="admin-error"></div>
     </div>
@@ -153,6 +152,42 @@
         <b>Catatan:</b> perubahan disimpan di <code>localStorage</code> browser ini. Untuk website online multi-device,
         nanti kita bisa sambungkan ke database/backend.
       </div>
+    </div>
+  </div>
+
+
+  <!-- ADMIN LOGIN -->
+  <div id="adminLoginModal" class="modal">
+    <div class="modal-box admin-login-box">
+      <button class="close" onclick="closeAdminLogin()">×</button>
+      <div class="eyebrow">PRIVATE AREA</div>
+      <h2>Admin Login</h2>
+      <p class="admin-help">Masuk menggunakan akun admin.</p>
+      <input id="adminEmail" class="admin-input" type="email" placeholder="Email admin" autocomplete="username">
+      <input id="adminPassword" class="admin-input" type="password" placeholder="Password" autocomplete="current-password">
+      <button class="admin-main-btn" onclick="loginAdmin()">MASUK</button>
+      <div id="adminError" class="admin-error"></div>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="adminModal" class="modal">
+    <div class="modal-box admin-dashboard">
+      <button class="close" onclick="closeAdmin()">×</button>
+      <div class="eyebrow">DASHBOARD</div>
+      <div class="admin-head">
+        <div>
+          <h2>NDREX ADMIN</h2>
+          <p class="admin-help">Kelola harga dan stok produk.</p>
+        </div>
+        <button class="copy-btn" onclick="logoutAdmin()">KELUAR</button>
+      </div>
+      <div id="adminProducts" class="admin-products"></div>
+      <div class="admin-actions">
+        <button class="admin-main-btn" onclick="saveAdminData()">SIMPAN PERUBAHAN</button>
+      </div>
+      <div id="adminSaved" class="admin-saved"></div>
+      <div class="admin-info"><b>Database:</b> perubahan disimpan ke PostgreSQL di server.</div>
     </div>
   </div>
 
