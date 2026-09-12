@@ -254,9 +254,10 @@ function renderResellerPanel(){
   list.innerHTML="";
   const rows=[];
   apps.forEach((a,ai)=>{
-    const resellerTier=a.tiers.find(t=>String(t[0]).toUpperCase().includes("RESELLER"));
-    if(resellerTier){
-      rows.push({app:a.name||"Produk", link:a.resellerLink||"", stock:resellerTier[2], ai});
+    // Link reseller berdiri sendiri: tidak bergantung pada tier/harga RESELLER.
+    // Kalau admin mengisi link, produk akan selalu muncul di panel reseller.
+    if((a.resellerLink||"").trim()){
+      rows.push({app:a.name||"Produk", link:a.resellerLink||"", stock:true, ai});
     }
   });
   if(!rows.length){

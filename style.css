@@ -227,3 +227,4 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
 .reseller-link-btn:hover:not(:disabled){transform:translateY(-1px);background:rgba(255,255,255,.12)}
 .reseller-link-btn:disabled{opacity:.4;cursor:not-allowed}
 @media(max-width:560px){.reseller-access-card{align-items:flex-start;flex-direction:column}.reseller-link-btn{width:100%}}
+.reseller-password-input{width:100%;box-sizing:border-box}
