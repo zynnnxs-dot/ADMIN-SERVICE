@@ -41,3 +41,37 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
+
+/* NDREX V19 — 3D theme transition */
+(function () {
+  function ndrexThemeTransition() {
+    if (document.querySelector('.ndrex-theme-portal')) return;
+    const portal = document.createElement('div');
+    portal.className = 'ndrex-theme-portal active';
+    const count = window.innerWidth < 600 ? 28 : 42;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('i');
+      p.className = 'ndrex-theme-particle';
+      const a = Math.random() * Math.PI * 2;
+      const r = 120 + Math.random() * Math.min(window.innerWidth, window.innerHeight) * .42;
+      p.style.setProperty('--dx', Math.cos(a) * r + 'px');
+      p.style.setProperty('--dy', Math.sin(a) * r + 'px');
+      p.style.animationDelay = (Math.random() * .12) + 's';
+      portal.appendChild(p);
+    }
+    document.body.appendChild(portal);
+    setTimeout(() => portal.remove(), 850);
+  }
+
+  // Capture clicks on any theme-toggle control without replacing existing theme logic.
+  document.addEventListener('click', function (e) {
+    const el = e.target.closest(
+      '[data-theme], [data-theme-toggle], #themeToggle, #theme-toggle, .theme-toggle, .theme-switch, .toggle-theme, button[aria-label*="tema" i], button[title*="tema" i]'
+    );
+    if (el) ndrexThemeTransition();
+  }, true);
+
+  window.ndrexThemeTransition = ndrexThemeTransition;
+})();
+

@@ -289,3 +289,71 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
   }
   .top-actions .top-btn.theme-toggle{padding:0 5px;font-size:7px}
 }
+
+
+/* NDREX V19 — cinematic 3D theme transition */
+.ndrex-theme-portal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  overflow: hidden;
+  perspective: 1200px;
+  opacity: 0;
+  transition: opacity .18s ease;
+}
+.ndrex-theme-portal.active { opacity: 1; }
+.ndrex-theme-portal::before {
+  content:"";
+  position:absolute;
+  left:50%; top:50%;
+  width: min(42vw, 340px);
+  height: min(42vw, 340px);
+  transform: translate(-50%,-50%) scale(.45) rotateX(58deg);
+  border: 1px solid rgba(150,170,255,.8);
+  border-radius: 28px;
+  box-shadow: 0 0 24px rgba(105,130,255,.8), inset 0 0 30px rgba(150,170,255,.25);
+  background: linear-gradient(135deg,rgba(255,255,255,.22),rgba(40,60,130,.12));
+  backdrop-filter: blur(4px);
+  animation: ndrexPortal .72s cubic-bezier(.2,.8,.2,1) forwards;
+}
+.ndrex-theme-portal::after {
+  content:"";
+  position:absolute;
+  left:50%; top:50%;
+  width: min(58vw, 460px);
+  height: min(58vw, 460px);
+  transform: translate(-50%,-50%) scale(.2);
+  border: 2px solid rgba(115,145,255,.65);
+  border-radius:50%;
+  box-shadow: 0 0 35px rgba(90,120,255,.75);
+  animation: ndrexOrbit .72s ease-out forwards;
+}
+.ndrex-theme-particle {
+  position:absolute;
+  left:50%; top:50%;
+  width:5px; height:5px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 12px #9aaeff,0 0 24px #5875ff;
+  animation: ndrexParticle .7s ease-out forwards;
+}
+@keyframes ndrexPortal {
+  0% { opacity:0; transform:translate(-50%,-50%) scale(.25) rotateX(70deg) rotateY(-35deg); }
+  45% { opacity:1; transform:translate(-50%,-50%) scale(1) rotateX(18deg) rotateY(28deg); }
+  100% { opacity:0; transform:translate(-50%,-50%) scale(1.8) rotateX(0) rotateY(0); }
+}
+@keyframes ndrexOrbit {
+  0% { opacity:0; transform:translate(-50%,-50%) scale(.15) rotate(0deg); }
+  45% { opacity:1; }
+  100% { opacity:0; transform:translate(-50%,-50%) scale(1.35) rotate(240deg); }
+}
+@keyframes ndrexParticle {
+  0% { opacity:0; transform:translate(-50%,-50%) scale(.4); }
+  20% { opacity:1; }
+  100% { opacity:0; transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ndrex-theme-portal, .ndrex-theme-portal * { animation:none !important; transition:none !important; }
+}
+
