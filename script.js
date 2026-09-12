@@ -1,7 +1,7 @@
 const defaultApps=[
-  {id:"netflix",name:"NETFLIX",icon:"N",category:"STREAMING",description:"Basic • VIP • Reseller",
+  {id:"netflix",name:"NETFLIX",icon:"N",image:"logo-netflix.jpg",category:"STREAMING",description:"Basic • VIP • Reseller",
     tiers:[["BASIC","Rp5.000",true],["VIP","Rp10.000",true],["RESELLER","Rp25.000",true]]},
-  {id:"canva",name:"CANVA",icon:"C",category:"DESIGN",description:"Basic • VIP",
+  {id:"canva",name:"CANVA",icon:"C",image:"logo-canva.png",category:"DESIGN",description:"Basic • VIP",
     tiers:[["BASIC","Rp5.000",true],["VIP","Rp10.000",true]]},
   {id:"alight-motion",name:"ALIGHT MOTION",icon:"A",category:"EDITING",description:"VIP 1 Tahun • Generator APK",
     tiers:[["VIP 1 TAHUN","Rp2.000",true],["GENERATOR APK","Rp15.000",true]]}
@@ -10,13 +10,22 @@ let apps=load(),admin=false;
 function load(){
   try{
     let x=localStorage.getItem("ndrex_apps");
-    if(x) return JSON.parse(x);
+    if(x){
+      let a=JSON.parse(x);
+      a.forEach(app=>{
+        if(!app.image){
+          let d=defaultApps.find(x=>x.id===app.id);
+          if(d&&d.image) app.image=d.image;
+        }
+      });
+      return a;
+    }
     let old=localStorage.getItem("ndrex_products");
     if(old){
       let o=JSON.parse(old);
       return Object.entries(o).map(([name,tiers])=>{
         let d=defaultApps.find(a=>a.name===name);
-        return {id:d?d.id:slugify(name),name,icon:d?d.icon:name[0].toUpperCase(),category:d?d.category:"PRODUK",description:d?d.description:"",tiers};
+        return {id:d?d.id:slugify(name),name,icon:d?d.icon:name[0].toUpperCase(),image:d?d.image:undefined,category:d?d.category:"PRODUK",description:d?d.description:"",tiers};
       });
     }
     return structuredClone(defaultApps);
@@ -55,7 +64,7 @@ function renderProductGrid(){
     const b=document.createElement("button");
     b.className="product-card";
     b.onclick=()=>openTiers(a.id);
-    b.innerHTML=`<div class="icon">${esc(a.icon||a.name[0]||"?")}</div><small>${esc(a.category||"PRODUK")}</small><h3>${esc(a.name)}</h3><p>${esc(a.description||"")}</p><b>→</b>`;
+    b.innerHTML=`<div class="icon${a.image?" has-image":""}">${a.image?`<img src="${esc(a.image)}" alt="${esc(a.name)}">`:esc(a.icon||a.name[0]||"?")}</div><small>${esc(a.category||"PRODUK")}</small><h3>${esc(a.name)}</h3><p>${esc(a.description||"")}</p><b>→</b>`;
     grid.appendChild(b);
   });
   requestAnimationFrame(()=>{ updateCarouselPadding(); updateCarouselFocus(); });
@@ -342,79 +351,4 @@ function toggleTheme(){
 (function initTheme(){
   const saved = localStorage.getItem("ndrex_theme") || "dark";
   setTheme(saved);
-})();
-
-
-/* ===== V13 cinematic product selection ===== */
-(function(){
-  function initCinematic(){
-    const detail=document.getElementById('cinematicDetail');
-    const title=document.getElementById('cinematicTitle');
-    const meta=document.getElementById('cinematicMeta');
-    const desc=document.getElementById('cinematicDescription');
-    const price=document.getElementById('cinematicPrice');
-    const poster=document.getElementById('cinematicPoster');
-    const closeBtn=document.getElementById('cinematicClose');
-    const backBtn=document.getElementById('cinematicBack');
-    const buyBtn=document.getElementById('cinematicBuy');
-    const cards=document.querySelectorAll('.product-card');
-    if(!detail || !cards.length) return;
-
-    let activeCard=null;
-
-    function cleanText(el){
-      return el ? el.textContent.replace(/\s+/g,' ').trim() : '';
-    }
-
-    function openCard(card){
-      activeCard=card;
-      const h=card.querySelector('h3');
-      const p=card.querySelector('p');
-      const small=card.querySelector('small');
-      const b=card.querySelector('b');
-      title.textContent=cleanText(h)||'PRODUCT';
-      desc.textContent=cleanText(p)||'Pilihan premium dari NDREX PROJECT.';
-      price.textContent=cleanText(b)||'';
-      meta.textContent=(cleanText(small)||'NDREX PROJECT')+'  •  PREMIUM ACCESS';
-
-      // Use the existing card visual as the detail poster where possible.
-      const bg=getComputedStyle(card).backgroundImage;
-      if(bg && bg!=='none'){
-        poster.style.backgroundImage=bg;
-        poster.style.backgroundSize='cover';
-        poster.style.backgroundPosition='center';
-      } else {
-        poster.style.backgroundImage='';
-      }
-
-      detail.classList.add('is-open');
-      detail.setAttribute('aria-hidden','false');
-      document.body.classList.add('cinematic-page-open');
-    }
-
-    function close(){
-      detail.classList.remove('is-open');
-      detail.setAttribute('aria-hidden','true');
-      document.body.classList.remove('cinematic-page-open');
-      activeCard=null;
-    }
-
-    cards.forEach(card=>{
-      card.addEventListener('click',function(e){
-        if(e.target.closest('button,a')) return;
-        openCard(card);
-      },{capture:true});
-    });
-    closeBtn?.addEventListener('click',close);
-    backBtn?.addEventListener('click',close);
-    document.addEventListener('keydown',e=>{if(e.key==='Escape' && detail.classList.contains('is-open')) close()});
-    buyBtn?.addEventListener('click',()=>{
-      if(activeCard){
-        const btn=activeCard.querySelector('button,a,[onclick]');
-        if(btn) btn.click();
-      }
-    });
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initCinematic);
-  else initCinematic();
 })();

@@ -49,15 +49,12 @@
 
 <section id="slide2" class="store">
   <header class="topbar">
-    <a class="brand" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" aria-label="NDREX PROJECT">
-      <span class="brand-mark">N</span>
-      <span class="brand-word">NDREX <em>PROJECT</em></span>
-    </a>
-    <nav class="top-actions" aria-label="Navigasi utama">
-      <button class="top-btn theme-toggle" id="themeToggleBtn" onclick="toggleTheme()"><span class="nav-dot"></span><span>MODE TERANG</span></button>
-      <button class="top-btn" onclick="openPayment()"><span class="nav-icon">↗</span><span>PEMBAYARAN</span></button>
-      <button class="top-btn admin-nav" onclick="openAdminLogin()"><span class="nav-icon">⌘</span><span>ADMIN</span></button>
-    </nav>
+    <div class="brand">NDREX <span>PROJECT</span></div>
+    <div class="top-actions">
+      <button class="top-btn theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">MODE TERANG</button>
+      <button class="top-btn" onclick="openPayment()">PEMBAYARAN</button>
+      <button class="top-btn" onclick="openAdminLogin()">ADMIN</button>
+    </div>
   </header>
 
   <!-- VIDEO ANIMATION -->
@@ -167,43 +164,5 @@
 </div>
 
 <script src="script.js"></script>
-
-<div class="cinema-dim" id="cinemaDim"></div>
-<div class="cinema-hint">TAP CARD LAGI / ESC UNTUK KEMBALI</div>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const cards = document.querySelectorAll('.product-card');
-  const body = document.body;
-  if (!cards.length) return;
-
-  cards.forEach(card => {
-    card.addEventListener('click', (e) => {
-      // Let existing buttons/links inside a card keep their normal behavior.
-      if (e.target.closest('button,a')) return;
-      const already = card.classList.contains('cinema-selected');
-      cards.forEach(c => c.classList.remove('cinema-selected'));
-      if (already) {
-        body.classList.remove('cinema-active');
-      } else {
-        card.classList.add('cinema-selected');
-        body.classList.add('cinema-active');
-      }
-    });
-  });
-
-  document.getElementById('cinemaDim')?.addEventListener('click', () => {
-    cards.forEach(c => c.classList.remove('cinema-selected'));
-    body.classList.remove('cinema-active');
-  });
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      cards.forEach(c => c.classList.remove('cinema-selected'));
-      body.classList.remove('cinema-active');
-    }
-  });
-});
-</script>
-
 </body>
 </html>
