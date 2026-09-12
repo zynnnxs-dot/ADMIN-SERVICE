@@ -162,7 +162,22 @@
         </div>
       </div>
     </div>
-    <button class="main-btn" onclick="saveAdminData()">SIMPAN PERUBAHAN</button>
+    
+<!-- NDREX V27 — social links editor inside Admin -->
+<div class="ndrex-social-settings">
+  <div class="ndrex-social-settings-title">SOSIAL MEDIA</div>
+  <div class="ndrex-social-settings-sub">Atur link yang tampil di popup sosial media.</div>
+  <div class="ndrex-social-grid">
+    <input class="admin-input ndrex-social-url" data-social-index="0" type="url" placeholder="Instagram — https://...">
+    <input class="admin-input ndrex-social-url" data-social-index="1" type="url" placeholder="TikTok — https://...">
+    <input class="admin-input ndrex-social-url" data-social-index="2" type="url" placeholder="WhatsApp — https://...">
+    <input class="admin-input ndrex-social-url" data-social-index="3" type="url" placeholder="Telegram — https://...">
+  </div>
+  <button type="button" class="copy-btn full" id="ndrexSocialSave">SIMPAN LINK</button>
+  <div id="ndrexSocialSaved" class="saved"></div>
+</div>
+
+<button class="main-btn" onclick="saveAdminData()">SIMPAN PERUBAHAN</button>
     <button class="copy-btn full" onclick="resetAdminData()">RESET DEFAULT</button>
     <div id="adminSaved" class="saved"></div>
     <p class="note">Admin demo ini menyimpan data di browser (localStorage). Password demo: <b>ndrex123</b>.</p>
@@ -195,12 +210,7 @@
 
 <script src="script.js"></script>
 
-<!-- NDREX V26 — visible social media settings inside Admin -->
-<div class="admin-section ndrex-social-admin-section">
-  <div class="admin-app-head" style="margin-bottom:8px">
-    <div>
-      <div class="eyebrow">SOCIAL MEDIA</div>
-      <h3 style="margin:4px 0 0">LINK SOSIAL MEDIA</h3>
+<h3 style="margin:4px 0 0">LINK SOSIAL MEDIA</h3>
     </div>
   </div>
   <p class="note" style="text-align:left;margin-bottom:10px">

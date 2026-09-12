@@ -536,3 +536,36 @@ document.addEventListener("DOMContentLoaded", function(){
   window.ndrexRenderSocialAdmin=renderFields;
 })();
 
+
+
+/* NDREX V27 — populate/save the Admin social editor only */
+(function(){
+  const names=['Instagram','TikTok','WhatsApp','Telegram'];
+  function fill(){
+    if(!window.ndrexSocialLoad)return;
+    const d=window.ndrexSocialLoad();
+    document.querySelectorAll('.ndrex-social-url').forEach(x=>{
+      const i=+x.dataset.socialIndex;
+      x.value=(d[i]&&d[i].url)||'';
+    });
+  }
+  function save(){
+    if(!window.ndrexSocialLoad||!window.ndrexSocialSave)return;
+    const d=window.ndrexSocialLoad();
+    document.querySelectorAll('.ndrex-social-url').forEach(x=>{
+      const i=+x.dataset.socialIndex;
+      if(!d[i])d[i]={name:names[i],icon:'',url:''};
+      d[i].url=x.value.trim();
+    });
+    window.ndrexSocialSave(d);
+    if(window.ndrexSocialRender)window.ndrexSocialRender();
+    const msg=document.getElementById('ndrexSocialSaved');
+    if(msg){msg.textContent='Tersimpan ✓';setTimeout(()=>msg.textContent='',1500)}
+  }
+  document.addEventListener('DOMContentLoaded',()=>{
+    fill();
+    const b=document.getElementById('ndrexSocialSave');
+    if(b)b.addEventListener('click',save);
+  });
+})();
+

@@ -332,3 +332,13 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
 /* NDREX V26 — social settings */
 .ndrex-social-admin-section h3{font-size:15px}
 .ndrex-social-admin-section .admin-input{width:100%;box-sizing:border-box}
+
+
+/* NDREX V27 — compact social editor inside Admin */
+.ndrex-social-settings{margin:14px 0;padding:13px;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:rgba(255,255,255,.035)}
+.ndrex-social-settings-title{font-size:12px;font-weight:800;letter-spacing:.08em}
+.ndrex-social-settings-sub{font-size:11px;opacity:.62;margin:4px 0 10px}
+.ndrex-social-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ndrex-social-grid .admin-input{width:100%;box-sizing:border-box}
+@media(max-width:600px){.ndrex-social-grid{grid-template-columns:1fr}}
+
