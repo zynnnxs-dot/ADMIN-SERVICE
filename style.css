@@ -291,69 +291,91 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
 }
 
 
-/* NDREX V19 — cinematic 3D theme transition */
-.ndrex-theme-portal {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
+/* NDREX V20 — 3D zipper theme toggle, button-only */
+.ndrex-theme-toggle-3d {
+  position: relative !important;
+  isolation: isolate;
+  overflow: visible !important;
+  transform-style: preserve-3d;
+  -webkit-tap-highlight-color: transparent;
+}
+.ndrex-theme-toggle-3d::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: inherit;
+  border: 1px solid rgba(135,155,255,.0);
   pointer-events: none;
-  overflow: hidden;
-  perspective: 1200px;
+  z-index: -1;
+}
+.ndrex-theme-toggle-3d.is-switching::before {
+  animation: ndrexZipGlow .72s ease-out both;
+}
+.ndrex-theme-toggle-3d.is-switching {
+  animation: ndrexZipButton .72s cubic-bezier(.2,.75,.25,1) both;
+}
+.ndrex-theme-toggle-3d .ndrex-zip-track {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%) scaleX(0);
+  transform-origin: center;
+  border-radius: 99px;
+  background: linear-gradient(90deg, transparent, rgba(145,165,255,.95), transparent);
+  box-shadow: 0 0 10px rgba(100,125,255,.9);
+  pointer-events: none;
   opacity: 0;
-  transition: opacity .18s ease;
 }
-.ndrex-theme-portal.active { opacity: 1; }
-.ndrex-theme-portal::before {
-  content:"";
-  position:absolute;
-  left:50%; top:50%;
-  width: min(42vw, 340px);
-  height: min(42vw, 340px);
-  transform: translate(-50%,-50%) scale(.45) rotateX(58deg);
-  border: 1px solid rgba(150,170,255,.8);
-  border-radius: 28px;
-  box-shadow: 0 0 24px rgba(105,130,255,.8), inset 0 0 30px rgba(150,170,255,.25);
-  background: linear-gradient(135deg,rgba(255,255,255,.22),rgba(40,60,130,.12));
-  backdrop-filter: blur(4px);
-  animation: ndrexPortal .72s cubic-bezier(.2,.8,.2,1) forwards;
+.ndrex-theme-toggle-3d.is-switching .ndrex-zip-track {
+  animation: ndrexZipTrack .72s ease-in-out both;
 }
-.ndrex-theme-portal::after {
-  content:"";
-  position:absolute;
-  left:50%; top:50%;
-  width: min(58vw, 460px);
-  height: min(58vw, 460px);
-  transform: translate(-50%,-50%) scale(.2);
-  border: 2px solid rgba(115,145,255,.65);
-  border-radius:50%;
-  box-shadow: 0 0 35px rgba(90,120,255,.75);
-  animation: ndrexOrbit .72s ease-out forwards;
+.ndrex-zip-tooth {
+  position: absolute;
+  width: 3px;
+  height: 8px;
+  top: 50%;
+  left: 50%;
+  margin: -4px 0 0 -1.5px;
+  border-radius: 2px;
+  background: rgba(205,215,255,.95);
+  box-shadow: 0 0 6px rgba(100,130,255,.8);
+  opacity: 0;
+  pointer-events: none;
 }
-.ndrex-theme-particle {
-  position:absolute;
-  left:50%; top:50%;
-  width:5px; height:5px;
-  border-radius:50%;
-  background:#fff;
-  box-shadow:0 0 12px #9aaeff,0 0 24px #5875ff;
-  animation: ndrexParticle .7s ease-out forwards;
+.ndrex-theme-toggle-3d.is-switching .ndrex-zip-tooth {
+  animation: ndrexZipTooth .68s cubic-bezier(.25,.7,.2,1) both;
 }
-@keyframes ndrexPortal {
-  0% { opacity:0; transform:translate(-50%,-50%) scale(.25) rotateX(70deg) rotateY(-35deg); }
-  45% { opacity:1; transform:translate(-50%,-50%) scale(1) rotateX(18deg) rotateY(28deg); }
-  100% { opacity:0; transform:translate(-50%,-50%) scale(1.8) rotateX(0) rotateY(0); }
+@keyframes ndrexZipButton {
+  0%   { transform: perspective(500px) rotateY(0) translateZ(0) scale(1); }
+  22%  { transform: perspective(500px) rotateY(-10deg) translateZ(8px) scale(1.015); }
+  50%  { transform: perspective(500px) rotateY(10deg) translateZ(13px) scale(1.035); }
+  78%  { transform: perspective(500px) rotateY(-5deg) translateZ(6px) scale(1.015); }
+  100% { transform: perspective(500px) rotateY(0) translateZ(0) scale(1); }
 }
-@keyframes ndrexOrbit {
-  0% { opacity:0; transform:translate(-50%,-50%) scale(.15) rotate(0deg); }
-  45% { opacity:1; }
-  100% { opacity:0; transform:translate(-50%,-50%) scale(1.35) rotate(240deg); }
+@keyframes ndrexZipGlow {
+  0%   { opacity: 0; box-shadow: 0 0 0 rgba(100,130,255,0); transform: scale(.96); }
+  35%  { opacity: 1; box-shadow: 0 0 18px rgba(100,130,255,.85), 0 0 36px rgba(100,130,255,.28); transform: scale(1.02); }
+  100% { opacity: 0; box-shadow: 0 0 0 rgba(100,130,255,0); transform: scale(1.08); }
 }
-@keyframes ndrexParticle {
-  0% { opacity:0; transform:translate(-50%,-50%) scale(.4); }
-  20% { opacity:1; }
-  100% { opacity:0; transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.1); }
+@keyframes ndrexZipTrack {
+  0% { opacity:0; transform:translateY(-50%) scaleX(0); }
+  20% { opacity:1; transform:translateY(-50%) scaleX(.3); }
+  55% { opacity:1; transform:translateY(-50%) scaleX(1); }
+  85% { opacity:.5; transform:translateY(-50%) scaleX(.35); }
+  100% { opacity:0; transform:translateY(-50%) scaleX(0); }
+}
+@keyframes ndrexZipTooth {
+  0% { opacity:0; transform:rotate(45deg) translateX(0) scale(.5); }
+  30% { opacity:1; }
+  70% { opacity:1; transform:rotate(45deg) translateX(var(--zip-x,0px)) scale(1); }
+  100% { opacity:0; transform:rotate(45deg) translateX(var(--zip-x,0px)) scale(.35); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ndrex-theme-portal, .ndrex-theme-portal * { animation:none !important; transition:none !important; }
+  .ndrex-theme-toggle-3d.is-switching,
+  .ndrex-theme-toggle-3d.is-switching::before,
+  .ndrex-theme-toggle-3d.is-switching .ndrex-zip-track,
+  .ndrex-theme-toggle-3d.is-switching .ndrex-zip-tooth { animation: none !important; }
 }
 
