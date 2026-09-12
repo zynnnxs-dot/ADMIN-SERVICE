@@ -431,3 +431,22 @@ function toggleTheme(){
   const saved = localStorage.getItem("ndrex_theme") || "dark";
   setTheme(saved);
 })();
+
+/* NDREX V24 — locate only the top-left brand */
+document.addEventListener("DOMContentLoaded", function(){
+  const candidates = Array.from(document.querySelectorAll("header .logo, header .brand, nav .logo, nav .brand, .logo, .brand"));
+  const el = candidates.find(x => /NDREX\s*PROJECT/i.test(x.textContent || ""));
+  if (el && !el.querySelector(".ndrex-logo-text")) {
+    const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
+    let n;
+    while(n=walker.nextNode()){
+      if(/NDREX\s*PROJECT/i.test(n.nodeValue||"")){
+        const span=document.createElement("span");
+        span.className="ndrex-logo-text";
+        span.textContent=n.nodeValue;
+        n.parentNode.replaceChild(span,n);
+        break;
+      }
+    }
+  }
+});

@@ -291,33 +291,21 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
 }
 
 
-/* NDREX V22 — logo text only, subtle repeating animation */
-.ndrex-logo-text {
-  animation: ndrexLogoPulse 3.2s ease-in-out infinite;
-  transform-origin: center;
-  will-change: opacity, filter, text-shadow, transform;
-}
-@keyframes ndrexLogoPulse {
-  0%, 100% {
-    opacity: 1;
-    filter: brightness(1);
-    text-shadow: none;
-    transform: translateY(0);
-  }
-  45% {
-    opacity: .88;
-    filter: brightness(1.18);
-    text-shadow: 0 0 10px rgba(125, 145, 255, .32);
-    transform: translateY(-1px);
-  }
-  55% {
-    opacity: 1;
-    filter: brightness(1.04);
-    text-shadow: 0 0 4px rgba(125, 145, 255, .16);
-    transform: translateY(0);
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   .ndrex-logo-text { animation: none !important; }
 }
 
+
+/* NDREX V24 — top-left NDREX PROJECT logo only */
+.ndrex-logo-text{
+  display:inline-block;
+  animation:ndrexLogoShimmer 2.8s ease-in-out infinite;
+  transform-origin:center;
+  will-change:transform,filter,text-shadow,opacity;
+}
+@keyframes ndrexLogoShimmer{
+  0%,100%{transform:translateY(0) scale(1);filter:brightness(1);opacity:1;text-shadow:none}
+  35%{transform:translateY(-1px) scale(1.025);filter:brightness(1.22);opacity:1;text-shadow:0 0 7px rgba(130,150,255,.42)}
+  50%{transform:translateY(0) scale(1);filter:brightness(1.06);opacity:.94;text-shadow:0 0 14px rgba(130,150,255,.28)}
+  65%{transform:translateY(1px) scale(1.012);filter:brightness(1.16);opacity:1;text-shadow:0 0 6px rgba(130,150,255,.35)}
+}
