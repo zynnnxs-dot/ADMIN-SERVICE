@@ -77,17 +77,7 @@
       <p>Pilih aplikasi yang kamu butuhkan, lalu tentukan tier yang ingin dibeli.</p>
     </div>
 
-    <div class="product-grid">
-      <button class="product-card" onclick="openTiers('NETFLIX')">
-        <div class="icon">N</div><small>STREAMING</small><h3>NETFLIX</h3><p>Basic • VIP • Reseller</p><b>→</b>
-      </button>
-      <button class="product-card" onclick="openTiers('CANVA')">
-        <div class="icon">C</div><small>DESIGN</small><h3>CANVA</h3><p>Basic • VIP</p><b>→</b>
-      </button>
-      <button class="product-card" onclick="openTiers('ALIGHT MOTION')">
-        <div class="icon">A</div><small>EDITING</small><h3>ALIGHT MOTION</h3><p>VIP 1 Tahun • Generator APK</p><b>→</b>
-      </button>
-    </div>
+    <div class="product-grid" id="productGrid"></div>
   </main>
   <footer>© 2026 NDREX PROJECT — DIGITAL STORE</footer>
 </section>
@@ -140,6 +130,7 @@
     <div class="eyebrow">DASHBOARD</div>
     <h2>NDREX ADMIN</h2>
     <div id="adminProducts"></div>
+    <button type="button" class="add-app-btn" onclick="addNewApp()">+ TAMBAH APLIKASI</button>
     <button class="main-btn" onclick="saveAdminData()">SIMPAN PERUBAHAN</button>
     <button class="copy-btn full" onclick="resetAdminData()">RESET DEFAULT</button>
     <div id="adminSaved" class="saved"></div>
