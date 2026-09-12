@@ -118,6 +118,28 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
   100%{transform:scale(4.6);opacity:0}
 }
 
+.star-loader{position:fixed;inset:0;z-index:150;background:#03050b;opacity:0;pointer-events:none;overflow:hidden;transition:opacity .35s ease}
+.star-loader.show{opacity:1;pointer-events:auto}
+.shoot{position:absolute;top:0;left:0;width:150px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#cdd3ff 60%,#fff);opacity:0;transform-origin:left center}
+.star-loader.show .shoot{animation:shootAcross 1.15s cubic-bezier(.3,.6,.2,1) forwards}
+.shoot.s1{top:18%;left:-10%;animation-delay:0s!important}
+.shoot.s2{top:46%;left:-10%;width:110px;animation-delay:.22s!important}
+.shoot.s3{top:74%;left:-10%;width:130px;animation-delay:.4s!important}
+@keyframes shootAcross{
+  0%{transform:translate(0,0) rotate(-28deg) scaleX(.4);opacity:0}
+  12%{opacity:1}
+  75%{opacity:1}
+  100%{transform:translate(126vw,58vh) rotate(-28deg) scaleX(1);opacity:0}
+}
+.star-loader-label{position:absolute;left:50%;bottom:16%;transform:translateX(-50%);font:600 10px Orbitron;letter-spacing:3px;color:#7d84a3;opacity:0;display:flex;align-items:center;gap:8px}
+.star-loader.show .star-loader-label{animation:labelFade 1.5s ease forwards .2s}
+@keyframes labelFade{0%{opacity:0}20%{opacity:1}85%{opacity:1}100%{opacity:0}}
+.loader-dots{display:inline-flex;gap:3px}
+.loader-dots i{width:3px;height:3px;border-radius:50%;background:#7d84a3;animation:dotHop 1s ease-in-out infinite}
+.loader-dots i:nth-child(2){animation-delay:.15s}
+.loader-dots i:nth-child(3){animation-delay:.3s}
+@keyframes dotHop{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+
 .video-content h2 span{color:#aeb7f4}
 
 .install-toast{

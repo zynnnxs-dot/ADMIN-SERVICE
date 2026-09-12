@@ -199,9 +199,18 @@ document.addEventListener("click", (e)=>{
 });
 
 const originalGoToStore = goToStore;
+const starLoader = document.getElementById("starLoader");
+const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const STAR_LOADER_MS = prefersReducedMotion ? 200 : 1600;
+
 goToStore = function(){
   playTransition();
-  setTimeout(originalGoToStore,160);
+  if(!starLoader){ setTimeout(originalGoToStore,160); return; }
+  starLoader.classList.add("show");
+  setTimeout(()=>{
+    originalGoToStore();
+    setTimeout(()=>{ starLoader.classList.remove("show"); },250);
+  },STAR_LOADER_MS);
 };
 
 /* ===== PWA: SERVICE WORKER + INSTALL PROMPT (ANDROID) ===== */
