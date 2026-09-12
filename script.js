@@ -57,6 +57,41 @@ goToStore = function(){
   setTimeout(originalGoToStore,160);
 };
 
+/* ===== PWA: SERVICE WORKER + INSTALL PROMPT (ANDROID) ===== */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  });
+}
+
+let deferredInstallPrompt = null;
+const installToast = document.getElementById("installToast");
+
+window.addEventListener("beforeinstallprompt",(e)=>{
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if(localStorage.getItem("ndrex_install_dismissed")) return;
+  setTimeout(()=>{ if(installToast) installToast.classList.add("show"); },1200);
+});
+
+function installApp(){
+  if(!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.finally(()=>{
+    deferredInstallPrompt = null;
+    installToast.classList.remove("show");
+  });
+}
+
+function dismissInstall(){
+  installToast.classList.remove("show");
+  localStorage.setItem("ndrex_install_dismissed","1");
+}
+
+window.addEventListener("appinstalled",()=>{
+  if(installToast) installToast.classList.remove("show");
+});
+
 /* ===== INTRO PORTAL PARALLAX ===== */
 const introSection = document.getElementById("slide1");
 const portalEl = document.querySelector(".portal");
