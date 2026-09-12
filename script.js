@@ -201,7 +201,7 @@ document.addEventListener("click", (e)=>{
 const originalGoToStore = goToStore;
 const starLoader = document.getElementById("starLoader");
 const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const STAR_LOADER_MS = prefersReducedMotion ? 200 : 1600;
+const STAR_LOADER_MS = prefersReducedMotion ? 200 : 3000;
 
 goToStore = function(){
   playTransition();
