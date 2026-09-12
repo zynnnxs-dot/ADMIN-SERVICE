@@ -230,3 +230,62 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
 .reseller-password-input{width:100%;box-sizing:border-box}
 
 @media (max-width:640px){.store{padding-top:calc(14px + env(safe-area-inset-top));padding-left:4vw;padding-right:4vw}.topbar{gap:10px}.brand{font-size:11px;letter-spacing:1.5px}.top-actions{gap:3px;padding:3px;border-radius:12px}.top-btn{width:31px;height:31px;font-size:14px}.top-btn.theme-toggle{font-size:16px}.video-hero{margin-top:20px}}
+
+/* ===== MOBILE TOOLBAR FIX v18 ===== */
+@media (max-width: 640px){
+  .topbar{
+    width:100%;
+    max-width:none;
+    box-sizing:border-box;
+    gap:8px;
+    padding-left:0;
+    padding-right:0;
+    overflow:visible;
+  }
+  .brand{
+    flex:1 1 auto;
+    min-width:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:10px;
+    letter-spacing:1.2px;
+  }
+  .top-actions{
+    flex:0 0 auto;
+    display:flex;
+    flex-wrap:nowrap;
+    gap:2px;
+    padding:2px;
+    border-radius:10px;
+    white-space:nowrap;
+  }
+  .top-actions .top-btn{
+    flex:0 0 auto;
+    width:auto;
+    min-width:0;
+    height:30px;
+    min-height:30px;
+    padding:0 6px;
+    border-radius:7px;
+    font-size:8px;
+    font-weight:700;
+    letter-spacing:.25px;
+    white-space:nowrap;
+  }
+  .top-actions .top-btn.theme-toggle{
+    font-size:8px;
+    padding:0 7px;
+  }
+}
+@media (max-width:390px){
+  .topbar{gap:5px}
+  .brand{font-size:9px;letter-spacing:1px}
+  .top-actions .top-btn{
+    height:28px;
+    min-height:28px;
+    padding:0 5px;
+    font-size:7px;
+  }
+  .top-actions .top-btn.theme-toggle{padding:0 5px;font-size:7px}
+}
