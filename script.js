@@ -493,3 +493,46 @@ document.addEventListener("DOMContentLoaded", function(){
   window.ndrexSocialSave=save;
 })();
 
+
+
+/* NDREX V26 — render social settings visibly in the Admin modal */
+(function(){
+  const names = [
+    {name:'Instagram', icon:'◎'},
+    {name:'TikTok', icon:'♪'},
+    {name:'WhatsApp', icon:'◉'},
+    {name:'Telegram', icon:'➤'}
+  ];
+  function esc2(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+  function renderFields(){
+    const box=document.getElementById('ndrexSocialAdminFields');
+    if(!box || !window.ndrexSocialLoad) return;
+    const data=window.ndrexSocialLoad();
+    box.innerHTML=names.map((n,i)=>{
+      const row=data[i]||{name:n.name,icon:n.icon,url:''};
+      return `<label class="note" style="display:block;text-align:left;margin:8px 0 4px">${n.name}</label>
+      <input class="admin-input ndrex-social-url" data-social-index="${i}" type="url"
+        placeholder="https://..." value="${esc2(row.url)}">`;
+    }).join('');
+  }
+  function saveFields(){
+    if(!window.ndrexSocialLoad || !window.ndrexSocialSave) return;
+    const data=window.ndrexSocialLoad();
+    document.querySelectorAll('.ndrex-social-url').forEach(inp=>{
+      const i=Number(inp.dataset.socialIndex);
+      if(!data[i]) data[i]={name:names[i].name,icon:names[i].icon,url:''};
+      data[i].url=inp.value.trim();
+    });
+    window.ndrexSocialSave(data);
+    if(window.ndrexSocialRender) window.ndrexSocialRender();
+    const msg=document.getElementById('ndrexSocialSaved');
+    if(msg){msg.textContent='Link sosial media tersimpan ✓'; setTimeout(()=>msg.textContent='',1800)}
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    renderFields();
+    const b=document.getElementById('ndrexSocialSave');
+    if(b) b.addEventListener('click',saveFields);
+  });
+  window.ndrexRenderSocialAdmin=renderFields;
+})();
+

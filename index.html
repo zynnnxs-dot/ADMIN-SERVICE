@@ -195,34 +195,21 @@
 
 <script src="script.js"></script>
 
-<!-- NDREX V25 social media admin settings -->
-<section id="ndrexSocialAdminPanel" style="display:none;margin-top:14px">
-  <div style="font-weight:700;margin-bottom:8px">Sosial Media</div>
+<!-- NDREX V26 — visible social media settings inside Admin -->
+<div class="admin-section ndrex-social-admin-section">
+  <div class="admin-app-head" style="margin-bottom:8px">
+    <div>
+      <div class="eyebrow">SOCIAL MEDIA</div>
+      <h3 style="margin:4px 0 0">LINK SOSIAL MEDIA</h3>
+    </div>
+  </div>
+  <p class="note" style="text-align:left;margin-bottom:10px">
+    Isi link yang mau ditampilkan di popup bawah. Kosongkan jika tidak ingin ditampilkan.
+  </p>
   <div id="ndrexSocialAdminFields"></div>
-</section>
-<script>
-document.addEventListener('DOMContentLoaded',function(){
-  const panel=document.getElementById('ndrexSocialAdminPanel');
-  const fields=document.getElementById('ndrexSocialAdminFields');
-  if(!panel||!fields)return;
-  const renderAdmin=()=>{
-    fields.innerHTML='';
-    const box=window.ndrexSocialAdmin&&window.ndrexSocialAdmin();
-    if(box)fields.appendChild(box);
-    const save=document.getElementById('ndrexSocialSave');
-    if(save)save.onclick=function(){
-      const data=window.ndrexSocialLoad();
-      fields.querySelectorAll('[data-social-index]').forEach(inp=>data[+inp.dataset.socialIndex].url=inp.value.trim());
-      window.ndrexSocialSave(data); window.ndrexSocialRender();
-      save.textContent='Tersimpan ✓'; setTimeout(()=>save.textContent='Simpan Sosial Media',1200);
-    };
-  };
-  renderAdmin();
-  // Show this section when an element with "admin" is opened, if present.
-  const obs=new MutationObserver(()=>{if(document.querySelector('#adminPanel,.admin-panel,[data-admin-panel]')){panel.style.display='block';renderAdmin()}});
-  obs.observe(document.body,{subtree:true,childList:true,attributes:true});
-});
-</script>
+  <button type="button" class="copy-btn full" id="ndrexSocialSave">SIMPAN LINK SOSIAL MEDIA</button>
+  <div id="ndrexSocialSaved" class="saved"></div>
+</div>
 
 </body>
 </html>

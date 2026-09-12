@@ -328,3 +328,7 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
 .ndrex-social-admin button{width:100%;padding:8px;border:0;border-radius:9px;cursor:pointer}
 @media(max-width:600px){.ndrex-social-popup{right:12px;bottom:12px}.ndrex-social-card{width:230px}}
 
+
+/* NDREX V26 — social settings */
+.ndrex-social-admin-section h3{font-size:15px}
+.ndrex-social-admin-section .admin-input{width:100%;box-sizing:border-box}
