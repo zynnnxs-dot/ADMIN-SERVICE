@@ -56,3 +56,16 @@ goToStore = function(){
   playTransition();
   setTimeout(originalGoToStore,160);
 };
+
+/* ===== INTRO PORTAL PARALLAX ===== */
+const introSection = document.getElementById("slide1");
+const portalEl = document.querySelector(".portal");
+if(introSection && portalEl){
+  introSection.addEventListener("mousemove",(e)=>{
+    const r = introSection.getBoundingClientRect();
+    const x = (e.clientX - r.left)/r.width - .5;
+    const y = (e.clientY - r.top)/r.height - .5;
+    portalEl.style.transform = `translate(${x*-16}px,${y*-16}px)`;
+  });
+  introSection.addEventListener("mouseleave",()=>{ portalEl.style.transform = ""; });
+}
