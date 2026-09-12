@@ -5,7 +5,24 @@ const defaults={
 };
 let products=load(),admin=false;
 function load(){try{let x=localStorage.getItem("ndrex_products");return x?JSON.parse(x):structuredClone(defaults)}catch{return structuredClone(defaults)}}
-function type(){let s="NDREX PROJECT",i=0,e=document.getElementById("typingText");(function t(){if(i<s.length){e.textContent+=s[i++];setTimeout(t,105)}})()}type();
+function type(){let s="NDREX PROJECT",i=0,e=document.getElementById("typingText");(function t(){if(i<s.length){e.textContent+=s[i++];setTimeout(t,105)}})()}
+
+/* ===== SPACE DOOR INTRO ===== */
+const doorIntro = document.getElementById("doorIntro");
+function openDoors(){
+  if(!doorIntro){ type(); return; }
+  requestAnimationFrame(()=>doorIntro.classList.add("opening"));
+  setTimeout(()=>{
+    doorIntro.style.display="none";
+    type();
+  },1150);
+}
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded",openDoors);
+}else{
+  openDoors();
+}
+
 function goToStore(){document.getElementById("slide1").style.display="none";document.getElementById("slide2").classList.add("show");window.scrollTo(0,0)}
 function openTiers(p){modal("tierModal");document.getElementById("modalTitle").textContent=p;let l=document.getElementById("tierList");l.innerHTML="";products[p].forEach(x=>{let b=document.createElement("button");b.className="tier";b.disabled=!x[2];b.innerHTML=`<span>${x[0]}</span><span class="tier-price">${x[1]}${x[2]?"":" • HABIS"}</span>`;if(x[2])b.onclick=openPayment;l.appendChild(b)})}
 function modal(id){document.getElementById(id).classList.add("show")}
