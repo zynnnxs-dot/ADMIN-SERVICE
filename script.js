@@ -127,6 +127,8 @@ function loginAdmin(){if(document.getElementById("adminPassword").value!=="ndrex
 function renderAdmin(){
   const c=document.getElementById("adminProducts");
   c.innerHTML="";
+  const rpInput=document.getElementById("resellerPasswordInput");
+  if(rpInput) rpInput.value=getResellerPassword();
   if(!apps.length){
     c.innerHTML=`<p class="note">Belum ada aplikasi. Klik "+ Tambah Aplikasi" di bawah.</p>`;
   }
@@ -200,6 +202,8 @@ function saveAdminData(){
   syncFromDOM();
   apps.forEach(a=>{ if(!a.id) a.id=slugify(a.name); });
   localStorage.setItem("ndrex_apps",JSON.stringify(apps));
+  const rpInput=document.getElementById("resellerPasswordInput");
+  if(rpInput && rpInput.value.trim()) localStorage.setItem("ndrex_reseller_password", rpInput.value.trim());
   renderAdmin();
   renderProductGrid();
   document.getElementById("adminSaved").textContent="Perubahan tersimpan ✓";
@@ -214,7 +218,54 @@ function resetAdminData(){
 }
 function closeAdmin(){document.getElementById("adminModal").classList.remove("show")}
 function esc(x){return String(x??"").replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closePayment();closeAdminLogin();closeAdmin()}})
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closePayment();closeAdminLogin();closeAdmin();closeResellerLogin();closeResellerPanel()}})
+
+/* ===== RESELLER PANEL ===== */
+const DEFAULT_RESELLER_PASSWORD="reseller123";
+function getResellerPassword(){return localStorage.getItem("ndrex_reseller_password")||DEFAULT_RESELLER_PASSWORD}
+
+function openResellerLogin(){
+  document.getElementById("resellerPassword").value="";
+  document.getElementById("resellerError").textContent="";
+  modal("resellerLoginModal");
+}
+function closeResellerLogin(){document.getElementById("resellerLoginModal").classList.remove("show")}
+
+function loginReseller(){
+  const val=document.getElementById("resellerPassword").value;
+  if(val!==getResellerPassword()){
+    document.getElementById("resellerError").textContent="Password salah.";
+    return;
+  }
+  closeResellerLogin();
+  renderResellerPanel();
+  modal("resellerModal");
+}
+function closeResellerPanel(){document.getElementById("resellerModal").classList.remove("show")}
+
+function renderResellerPanel(){
+  const list=document.getElementById("resellerList");
+  list.innerHTML="";
+  const rows=[];
+  apps.forEach(a=>{
+    a.tiers.forEach(t=>{
+      if(String(t[0]).toUpperCase().includes("RESELLER")){
+        rows.push({app:a.name,tier:t[0],price:t[1],stock:t[2]});
+      }
+    });
+  });
+  if(!rows.length){
+    list.innerHTML=`<p class="note">Belum ada tier khusus reseller yang tersedia saat ini.</p>`;
+    return;
+  }
+  rows.forEach(r=>{
+    const el=document.createElement("div");
+    el.className="tier";
+    el.style.cursor="default";
+    el.innerHTML=`<span>${esc(r.app)} — ${esc(r.tier)}</span><span class="tier-price">${esc(r.price)}${r.stock?"":" • HABIS"}</span>`;
+    list.appendChild(el);
+  });
+}
 
 function confirmPayment(){
   const message = encodeURIComponent(

@@ -52,6 +52,7 @@
     <div class="brand">NDREX <span>PROJECT</span></div>
     <div class="top-actions">
       <button class="top-btn theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">MODE TERANG</button>
+      <button class="top-btn" onclick="openResellerLogin()">RESELLER</button>
       <button class="top-btn" onclick="openPayment()">PEMBAYARAN</button>
       <button class="top-btn" onclick="openAdminLogin()">ADMIN</button>
     </div>
@@ -115,6 +116,27 @@
   </div>
 </div>
 
+<div id="resellerLoginModal" class="modal">
+  <div class="modal-box small">
+    <button class="close" onclick="closeResellerLogin()">×</button>
+    <div class="eyebrow">RESELLER AREA</div><h2>Login Reseller</h2>
+    <input id="resellerPassword" class="admin-input" type="password" placeholder="Password reseller">
+    <button class="main-btn" onclick="loginReseller()">MASUK</button>
+    <div id="resellerError" class="error"></div>
+    <p class="note">Password diberikan admin setelah kamu membeli tier RESELLER.</p>
+  </div>
+</div>
+
+<div id="resellerModal" class="modal">
+  <div class="modal-box">
+    <button class="close" onclick="closeResellerPanel()">×</button>
+    <div class="eyebrow">RESELLER PANEL</div>
+    <h2>Halo, Reseller 👋</h2>
+    <p class="note" style="margin-bottom:14px">Berikut daftar harga khusus reseller kamu. Harga ini lebih murah dari harga customer biasa — jangan dibagikan ke luar.</p>
+    <div id="resellerList" class="tier-list"></div>
+  </div>
+</div>
+
 <div id="adminLoginModal" class="modal">
   <div class="modal-box small">
     <button class="close" onclick="closeAdminLogin()">×</button>
@@ -132,6 +154,14 @@
     <h2>NDREX ADMIN</h2>
     <div id="adminProducts"></div>
     <button type="button" class="add-app-btn" onclick="addNewApp()">+ TAMBAH APLIKASI</button>
+    <div class="admin-section">
+      <div class="admin-app-head" style="margin-bottom:0">
+        <div class="admin-app-fields">
+          <label class="note" style="text-align:left;margin-bottom:8px">PASSWORD PANEL RESELLER</label>
+          <input id="resellerPasswordInput" class="aa-name" placeholder="Password akses reseller" value="">
+        </div>
+      </div>
+    </div>
     <button class="main-btn" onclick="saveAdminData()">SIMPAN PERUBAHAN</button>
     <button class="copy-btn full" onclick="resetAdminData()">RESET DEFAULT</button>
     <div id="adminSaved" class="saved"></div>
