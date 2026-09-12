@@ -262,3 +262,46 @@ if(introSection && portalEl){
 }
 
 renderProductGrid();
+
+/* ===== THEME TOGGLE (ZIPPER TRANSITION) ===== */
+const zipperOverlay = document.getElementById("zipperOverlay");
+const themeToggleBtn = document.getElementById("themeToggleBtn");
+const ZIP_MS = 1150;
+const HERO_VIDEO_LIGHT = "hero-light.mp4";
+const HERO_VIDEO_DARK = "hero.mp4";
+
+function updateHeroVideoForTheme(theme){
+  const source = document.getElementById("heroVideoSource");
+  const video = document.getElementById("heroVideo");
+  if(!source || !video) return;
+  const wanted = theme === "light" ? HERO_VIDEO_LIGHT : HERO_VIDEO_DARK;
+  if(!source.getAttribute("src").endsWith(wanted)){
+    source.setAttribute("src", wanted);
+    video.load();
+    video.play().catch(()=>{});
+  }
+}
+
+function updateThemeButtonLabel(theme){
+  if(themeToggleBtn) themeToggleBtn.textContent = theme === "light" ? "MODE GELAP" : "MODE TERANG";
+}
+
+function setTheme(theme){
+  document.body.setAttribute("data-theme", theme === "light" ? "light" : "dark");
+  localStorage.setItem("ndrex_theme", theme);
+  updateHeroVideoForTheme(theme);
+  updateThemeButtonLabel(theme);
+}
+
+function toggleTheme(){
+  const next = document.body.getAttribute("data-theme") === "light" ? "dark" : "light";
+  if(!zipperOverlay){ setTheme(next); return; }
+  zipperOverlay.classList.add("show");
+  setTimeout(()=>{ setTheme(next); }, 60);
+  setTimeout(()=>{ zipperOverlay.classList.remove("show"); }, ZIP_MS);
+}
+
+(function initTheme(){
+  const saved = localStorage.getItem("ndrex_theme") || "dark";
+  setTheme(saved);
+})();

@@ -51,6 +51,7 @@
   <header class="topbar">
     <div class="brand">NDREX <span>PROJECT</span></div>
     <div class="top-actions">
+      <button class="top-btn theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">MODE TERANG</button>
       <button class="top-btn" onclick="openPayment()">PEMBAYARAN</button>
       <button class="top-btn" onclick="openAdminLogin()">ADMIN</button>
     </div>
@@ -58,8 +59,8 @@
 
   <!-- VIDEO ANIMATION -->
   <div class="video-hero">
-    <video autoplay muted loop playsinline preload="auto">
-      <source src="hero.mp4" type="video/mp4">
+    <video id="heroVideo" autoplay muted loop playsinline preload="auto">
+      <source id="heroVideoSource" src="hero.mp4" type="video/mp4">
     </video>
     <div class="video-overlay"></div>
     <div class="video-content">
@@ -153,6 +154,13 @@
     <div class="rocket-fin right"></div>
   </div>
   <div class="star-loader-label">MEMBUKA TOKO<span class="loader-dots"><i></i><i></i><i></i></span></div>
+</div>
+
+<div id="zipperOverlay" class="zipper-overlay">
+  <div class="zip-panel left"></div>
+  <div class="zip-panel right"></div>
+  <div class="zip-teeth"></div>
+  <div class="zip-pull"><span class="zip-pull-loop"></span></div>
 </div>
 
 <script src="script.js"></script>
