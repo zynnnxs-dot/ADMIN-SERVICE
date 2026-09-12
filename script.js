@@ -58,7 +58,45 @@ function renderProductGrid(){
     b.innerHTML=`<div class="icon">${esc(a.icon||a.name[0]||"?")}</div><small>${esc(a.category||"PRODUK")}</small><h3>${esc(a.name)}</h3><p>${esc(a.description||"")}</p><b>→</b>`;
     grid.appendChild(b);
   });
+  requestAnimationFrame(()=>{ updateCarouselPadding(); updateCarouselFocus(); });
 }
+
+/* ===== CAROUSEL: CENTER FOCUS + BLUR-ON-SCROLL ===== */
+function updateCarouselPadding(){
+  const grid=document.getElementById("productGrid");
+  const first=grid?.querySelector(".product-card");
+  if(!grid||!first) return;
+  const pad=Math.max(0,(grid.clientWidth-first.offsetWidth)/2);
+  grid.style.paddingLeft=pad+"px";
+  grid.style.paddingRight=pad+"px";
+}
+function updateCarouselFocus(){
+  const grid=document.getElementById("productGrid");
+  if(!grid) return;
+  const cards=grid.querySelectorAll(".product-card");
+  if(!cards.length) return;
+  const gr=grid.getBoundingClientRect();
+  const centerX=gr.left+gr.width/2;
+  cards.forEach(card=>{
+    const r=card.getBoundingClientRect();
+    const dist=Math.abs(centerX-(r.left+r.width/2));
+    const norm=Math.min(dist/(gr.width/2||1),1.3);
+    card.style.filter=`blur(${(norm*5).toFixed(2)}px)`;
+    card.style.transform=`scale(${(1-norm*0.1).toFixed(3)})`;
+    card.style.opacity=(1-norm*0.4).toFixed(3);
+  });
+}
+(function setupCarouselListeners(){
+  const grid=document.getElementById("productGrid");
+  if(!grid) return;
+  let ticking=false;
+  grid.addEventListener("scroll",()=>{
+    if(ticking) return;
+    ticking=true;
+    requestAnimationFrame(()=>{ updateCarouselFocus(); ticking=false; });
+  },{passive:true});
+  window.addEventListener("resize",()=>{ updateCarouselPadding(); updateCarouselFocus(); });
+})();
 
 function openTiers(id){
   const a=apps.find(x=>x.id===id);
