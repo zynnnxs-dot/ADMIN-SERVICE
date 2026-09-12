@@ -309,3 +309,22 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
   50%{transform:translateY(0) scale(1);filter:brightness(1.06);opacity:.94;text-shadow:0 0 14px rgba(130,150,255,.28)}
   65%{transform:translateY(1px) scale(1.012);filter:brightness(1.16);opacity:1;text-shadow:0 0 6px rgba(130,150,255,.35)}
 }
+
+
+/* NDREX V25 — configurable social media bottom popup */
+.ndrex-social-popup{position:fixed;right:18px;bottom:18px;z-index:9000;font-family:inherit}
+.ndrex-social-toggle{width:48px;height:48px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(18,20,30,.78);backdrop-filter:blur(16px);color:inherit;display:grid;place-items:center;cursor:pointer;box-shadow:0 10px 35px rgba(0,0,0,.28);transition:.25s}
+.ndrex-social-toggle:hover{transform:translateY(-2px) scale(1.03)}
+.ndrex-social-card{position:absolute;right:0;bottom:58px;width:250px;padding:14px;border-radius:20px;background:rgba(18,20,30,.9);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(22px);box-shadow:0 18px 55px rgba(0,0,0,.35);opacity:0;visibility:hidden;transform:translateY(10px) scale(.96);transition:.22s}
+.ndrex-social-popup.open .ndrex-social-card{opacity:1;visibility:visible;transform:none}
+.ndrex-social-title{font-size:13px;font-weight:700;margin-bottom:10px}
+.ndrex-social-list{display:grid;gap:8px}
+.ndrex-social-link{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;text-decoration:none;color:inherit;background:rgba(255,255,255,.06);transition:.2s}
+.ndrex-social-link:hover{background:rgba(255,255,255,.11);transform:translateX(-2px)}
+.ndrex-social-icon{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:rgba(255,255,255,.08);font-size:14px}
+.ndrex-social-name{font-size:12px;font-weight:600}
+.ndrex-social-admin{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.09)}
+.ndrex-social-admin input{width:100%;box-sizing:border-box;margin:4px 0;padding:8px;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.16);color:inherit}
+.ndrex-social-admin button{width:100%;padding:8px;border:0;border-radius:9px;cursor:pointer}
+@media(max-width:600px){.ndrex-social-popup{right:12px;bottom:12px}.ndrex-social-card{width:230px}}
+

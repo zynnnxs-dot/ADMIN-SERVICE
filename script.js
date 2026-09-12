@@ -450,3 +450,46 @@ document.addEventListener("DOMContentLoaded", function(){
     }
   }
 });
+
+
+/* NDREX V25 — social popup + admin settings, isolated from existing functions */
+(function(){
+  const KEY='ndrex_social_links_v25';
+  const defaults=[
+    {name:'Instagram',icon:'◎',url:''},
+    {name:'TikTok',icon:'♪',url:''},
+    {name:'WhatsApp',icon:'◉',url:''},
+    {name:'Telegram',icon:'➤',url:''}
+  ];
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||defaults}catch(e){return defaults}}
+  function save(x){localStorage.setItem(KEY,JSON.stringify(x))}
+  function render(){
+    const root=document.getElementById('ndrexSocialPopup'); if(!root)return;
+    const data=load();
+    const list=root.querySelector('.ndrex-social-list');
+    list.innerHTML=data.filter(x=>x.url).map(x=>`<a class="ndrex-social-link" href="${escapeHtml(x.url)}" target="_blank" rel="noopener"><span class="ndrex-social-icon">${escapeHtml(x.icon)}</span><span class="ndrex-social-name">${escapeHtml(x.name)}</span></a>`).join('');
+  }
+  function escapeHtml(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+  window.ndrexSocialAdmin=function(){
+    const data=load();
+    const rows=data.map((x,i)=>`<label style="display:block;font-size:11px">${escapeHtml(x.name)}<input data-social-index="${i}" value="${escapeHtml(x.url)}" placeholder="https://..."></label>`).join('');
+    const wrap=document.createElement('div');
+    wrap.className='ndrex-social-admin';
+    wrap.innerHTML=rows+'<button type="button" id="ndrexSocialSave">Simpan Sosial Media</button>';
+    return wrap;
+  };
+  function mount(){
+    if(document.getElementById('ndrexSocialPopup')){render();return}
+    const root=document.createElement('div');
+    root.id='ndrexSocialPopup'; root.className='ndrex-social-popup';
+    root.innerHTML=`<div class="ndrex-social-card"><div class="ndrex-social-title">Ikuti Kami</div><div class="ndrex-social-list"></div></div><button class="ndrex-social-toggle" aria-label="Sosial Media" title="Sosial Media">✦</button>`;
+    document.body.appendChild(root);
+    root.querySelector('.ndrex-social-toggle').onclick=()=>root.classList.toggle('open');
+    render();
+  }
+  document.addEventListener('DOMContentLoaded',mount);
+  window.ndrexSocialRender=render;
+  window.ndrexSocialLoad=load;
+  window.ndrexSocialSave=save;
+})();
+

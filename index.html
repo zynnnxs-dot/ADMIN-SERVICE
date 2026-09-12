@@ -194,5 +194,35 @@
 </div>
 
 <script src="script.js"></script>
+
+<!-- NDREX V25 social media admin settings -->
+<section id="ndrexSocialAdminPanel" style="display:none;margin-top:14px">
+  <div style="font-weight:700;margin-bottom:8px">Sosial Media</div>
+  <div id="ndrexSocialAdminFields"></div>
+</section>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  const panel=document.getElementById('ndrexSocialAdminPanel');
+  const fields=document.getElementById('ndrexSocialAdminFields');
+  if(!panel||!fields)return;
+  const renderAdmin=()=>{
+    fields.innerHTML='';
+    const box=window.ndrexSocialAdmin&&window.ndrexSocialAdmin();
+    if(box)fields.appendChild(box);
+    const save=document.getElementById('ndrexSocialSave');
+    if(save)save.onclick=function(){
+      const data=window.ndrexSocialLoad();
+      fields.querySelectorAll('[data-social-index]').forEach(inp=>data[+inp.dataset.socialIndex].url=inp.value.trim());
+      window.ndrexSocialSave(data); window.ndrexSocialRender();
+      save.textContent='Tersimpan ✓'; setTimeout(()=>save.textContent='Simpan Sosial Media',1200);
+    };
+  };
+  renderAdmin();
+  // Show this section when an element with "admin" is opened, if present.
+  const obs=new MutationObserver(()=>{if(document.querySelector('#adminPanel,.admin-panel,[data-admin-panel]')){panel.style.display='block';renderAdmin()}});
+  obs.observe(document.body,{subtree:true,childList:true,attributes:true});
+});
+</script>
+
 </body>
 </html>
