@@ -61,10 +61,21 @@ function renderProductGrid(){
     return;
   }
   apps.forEach(a=>{
+    const tiers=Array.isArray(a.tiers)?a.tiers:[];
+    const active=tiers.filter(x=>x&&x[2]).length;
+    const stockState=!tiers.length||active===0?"HABIS":(active<tiers.length?"TERBATAS":"TERSEDIA");
+    const stockClass=stockState.toLowerCase();
     const b=document.createElement("button");
     b.className="product-card";
     b.onclick=()=>openTiers(a.id);
-    b.innerHTML=`<div class="icon${a.image?" has-image":""}">${a.image?`<img src="${esc(a.image)}" alt="${esc(a.name)}">`:esc(a.icon||a.name[0]||"?")}</div><small>${esc(a.category||"PRODUK")}</small><h3>${esc(a.name)}</h3><p>${esc(a.description||"")}</p><b>→</b>`;
+    b.innerHTML=`
+      <div class="icon${a.image?" has-image":""}">${a.image?`<img src="${esc(a.image)}" alt="${esc(a.name)}">`:esc(a.icon||a.name[0]||"?")}</div>
+      <div class="product-stock ${stockClass}"><i></i>${stockState}</div>
+      <small>${esc(a.category||"PRODUK")}</small>
+      <h3>${esc(a.name)}</h3>
+      <p>${esc(a.description||"")}</p>
+      <b>→</b>`;
+    if(stockState==="HABIS") b.classList.add("is-sold-out");
     grid.appendChild(b);
   });
   requestAnimationFrame(()=>{ updateCarouselPadding(); updateCarouselFocus(); });
@@ -107,15 +118,40 @@ function updateCarouselFocus(){
   window.addEventListener("resize",()=>{ updateCarouselPadding(); updateCarouselFocus(); });
 })();
 
+let selectedOrder=null;
+
 function openTiers(id){
   const a=apps.find(x=>x.id===id);
   if(!a) return;
   modal("tierModal");
   document.getElementById("modalTitle").textContent=a.name;
-  let l=document.getElementById("tierList");l.innerHTML="";
+  const l=document.getElementById("tierList");
+  l.innerHTML="";
   if(!a.tiers.length){l.innerHTML=`<p class="note">Belum ada tier untuk produk ini.</p>`;return}
-  a.tiers.forEach(x=>{let b=document.createElement("button");b.className="tier";b.disabled=!x[2];b.innerHTML=`<span>${esc(x[0])}</span><span class="tier-price">${esc(x[1])}${x[2]?"":" • HABIS"}</span>`;if(x[2])b.onclick=openPayment;l.appendChild(b)})
+  a.tiers.forEach(x=>{
+    const b=document.createElement("button");
+    b.className="tier";
+    b.disabled=!x[2];
+    b.innerHTML=`<span>${esc(x[0])}</span><span class="tier-price">${esc(x[1])}${x[2]?"":" • HABIS"}</span>`;
+    if(x[2]) b.onclick=()=>openOrder(a,x);
+    l.appendChild(b);
+  });
 }
+
+function openOrder(app,tier){
+  selectedOrder={appId:app.id,product:app.name,tier:tier[0],price:tier[1]};
+  closeModal();
+  document.getElementById("orderProduct").textContent=app.name;
+  document.getElementById("orderTier").textContent=tier[0];
+  document.getElementById("orderPrice").textContent=tier[1];
+  modal("orderModal");
+}
+function closeOrder(){document.getElementById("orderModal").classList.remove("show")}
+function continueToPayment(){
+  closeOrder();
+  openPayment();
+}
+
 function modal(id){document.getElementById(id).classList.add("show")}
 function closeModal(){document.getElementById("tierModal").classList.remove("show")}
 function openPayment(){closeModal();modal("paymentModal")} function closePayment(){document.getElementById("paymentModal").classList.remove("show")}
@@ -224,7 +260,7 @@ function resetAdminData(){
 }
 function closeAdmin(){document.getElementById("adminModal").classList.remove("show")}
 function esc(x){return String(x??"").replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closePayment();closeAdminLogin();closeAdmin();closeResellerLogin();closeResellerPanel()}})
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeOrder();closePayment();closeAdminLogin();closeAdmin();closeResellerLogin();closeResellerPanel()}})
 
 /* ===== RESELLER PANEL ===== */
 const DEFAULT_RESELLER_PASSWORD="reseller123";

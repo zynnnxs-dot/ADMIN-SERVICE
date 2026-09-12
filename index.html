@@ -51,7 +51,7 @@
   <header class="topbar">
     <div class="brand">NDREX <span>PROJECT</span></div>
     <div class="top-actions">
-      <button class="top-btn theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Ganti tema" title="Ganti tema">☼ GANTI TEMA</button>
+      <button class="top-btn theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Ganti tema" title="Ganti tema">☼ <span>GANTI TEMA</span></button>
       <button class="top-btn" onclick="openResellerLogin()" aria-label="Reseller" title="Reseller">RESELLER</button>
       
       <button class="top-btn" onclick="openAdminLogin()" aria-label="Admin" title="Admin">ADMIN</button>
@@ -67,7 +67,7 @@
     <div class="video-content">
       <div class="eyebrow">WELCOME TO NDREX</div>
       <h2>ENTER THE<br><span>DARK NIGHT.</span></h2>
-      <p>Premium digital products, simple and fast.</p>
+      <p>Premium digital products, simple access, fast delivery.</p>
     </div>
     <div class="video-badge">AUTO PLAY • MUTED</div>
   </div>
@@ -75,8 +75,8 @@
   <main class="store-content">
     <div class="hero-copy">
       <div class="eyebrow">OUR PRODUCTS</div>
-      <h2>Choose Your<br><span>Digital Product.</span></h2>
-      <p>Pilih aplikasi yang kamu butuhkan, lalu tentukan tier yang ingin dibeli.</p>
+      <h2>YOUR DIGITAL<br><span>ACCESS.</span></h2>
+      <p>Premium digital products. Simple access, clear pricing, and fast delivery.</p>
     </div>
 
     <div class="product-grid" id="productGrid"></div>
@@ -90,6 +90,24 @@
     <div class="eyebrow">SELECT TIER</div>
     <h2 id="modalTitle"></h2>
     <div id="tierList" class="tier-list"></div>
+  </div>
+</div>
+
+
+<div id="orderModal" class="modal">
+  <div class="modal-box order-box">
+    <button class="close" onclick="closeOrder()">×</button>
+    <div class="eyebrow">ORDER SUMMARY</div>
+    <h2>Detail Pesanan</h2>
+    <div class="order-summary">
+      <div class="order-line"><span>Produk</span><b id="orderProduct">-</b></div>
+      <div class="order-line"><span>Tier</span><b id="orderTier">-</b></div>
+      <div class="order-line total"><span>Total</span><b id="orderPrice">-</b></div>
+    </div>
+    <div class="order-trust">
+      <span>✓</span><div><b>Siap dilanjutkan</b><small>Periksa detail sebelum masuk ke pembayaran.</small></div>
+    </div>
+    <button class="main-btn order-next" onclick="continueToPayment()">LANJUTKAN PEMBAYARAN</button>
   </div>
 </div>
 

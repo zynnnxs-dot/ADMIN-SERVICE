@@ -342,3 +342,47 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
 .ndrex-social-grid .admin-input{width:100%;box-sizing:border-box}
 @media(max-width:600px){.ndrex-social-grid{grid-template-columns:1fr}}
 
+
+/* NDREX V29 — product status, professional checkout, mobile polish, premium social popup */
+.product-stock{
+  position:absolute;left:18px;top:18px;z-index:2;
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 8px;border:1px solid var(--border);border-radius:99px;
+  background:rgba(3,5,11,.52);backdrop-filter:blur(10px);
+  font-size:7px;font-weight:800;letter-spacing:1.2px;color:var(--muted);
+}
+.product-stock i{width:5px;height:5px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+.product-stock.tersedia{color:#9fe6d4}.product-stock.terbatas{color:#d9c28a}.product-stock.habis{color:#d58f9a}
+.product-card.is-sold-out{opacity:.62}.product-card.is-sold-out .icon{filter:grayscale(.35)}
+.product-card.is-sold-out b{opacity:.45}
+.order-box{max-width:460px}
+.order-summary{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--panel)}
+.order-line{display:flex;justify-content:space-between;gap:16px;padding:14px 15px;border-bottom:1px solid var(--border);font-size:11px}
+.order-line span{color:var(--muted)}.order-line b{font-weight:700;text-align:right}
+.order-line.total{border-bottom:0;background:var(--accent-wash);padding:17px 15px}
+.order-line.total b{color:var(--accent);font:800 16px Orbitron}
+.order-trust{display:flex;gap:10px;align-items:center;margin:12px 0 15px;padding:11px 12px;border-radius:12px;background:var(--panel);color:var(--muted)}
+.order-trust>span{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;color:var(--accent);background:var(--accent-wash)}
+.order-trust b{display:block;font-size:10px;color:var(--text)}.order-trust small{display:block;font-size:8px;margin-top:2px}
+.order-next{margin-top:0}
+.ndrex-social-toggle{width:50px!important;height:50px!important;border-radius:17px!important;background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.035))!important;border-color:rgba(174,184,255,.20)!important}
+.ndrex-social-card{padding:16px!important;width:260px!important;border-radius:22px!important;background:color-mix(in srgb,var(--modal-bg) 90%,transparent)!important}
+.ndrex-social-title{font:800 11px Orbitron;letter-spacing:2px;text-transform:uppercase}
+.ndrex-social-link{border:1px solid transparent}.ndrex-social-link:hover{border-color:var(--accent-border)}
+@media(max-width:800px){
+  .topbar{gap:8px}
+  .brand{font-size:12px;letter-spacing:1.5px;white-space:nowrap}
+  .top-actions{gap:2px;padding:3px;border-radius:12px}
+  .top-btn{width:auto;min-width:31px;height:31px;padding:0 7px;font-size:8px;white-space:nowrap}
+  .top-btn.theme-toggle{font-size:14px}.top-btn.theme-toggle span{font-size:7px;margin-left:2px}
+  .video-hero{margin-top:22px;margin-bottom:52px}
+  .hero-copy h2{font-size:clamp(31px,9vw,52px)}
+  .hero-copy p{font-size:11px;max-width:330px}
+  .product-grid{margin-top:34px;gap:12px}
+  .product-card{flex-basis:190px}
+}
+@media(max-width:390px){
+  .brand{font-size:10px;letter-spacing:1px}
+  .top-btn{padding:0 5px;font-size:7px}
+  .top-btn.theme-toggle span{font-size:6.5px}
+}
