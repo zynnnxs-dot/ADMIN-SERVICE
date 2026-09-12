@@ -213,3 +213,17 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
 .zip-pull-loop{position:absolute;left:50%;bottom:0;width:10px;height:10px;transform:translateX(-50%);border:2px solid #dde1f2;border-radius:50%}
 .zipper-overlay.show .zip-pull{animation:pullDown .5s cubic-bezier(.3,.6,.2,1) forwards}
 @keyframes pullDown{from{top:-30px}to{top:100%}}
+
+/* ===== RESELLER ACCESS LINKS ===== */
+.reseller-link-edit{margin:12px 0 14px;padding:13px 14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.025)}
+.reseller-link-edit .note{display:block;text-align:left;margin-bottom:7px;font-size:11px;letter-spacing:.08em}
+.reseller-link-edit .ar-link{width:100%;box-sizing:border-box}
+.reseller-link-edit small{display:block;margin-top:7px;opacity:.55;font-size:10px}
+.reseller-access-card{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 16px;margin-bottom:10px;border:1px solid rgba(255,255,255,.09);border-radius:16px;background:rgba(255,255,255,.035)}
+.reseller-access-info{display:flex;flex-direction:column;gap:5px;min-width:0}
+.reseller-access-title{font-weight:700;letter-spacing:.03em}
+.reseller-access-status{font-size:9px;letter-spacing:.12em;opacity:.55}
+.reseller-link-btn{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:inherit;border-radius:10px;padding:10px 12px;font-size:10px;font-weight:700;letter-spacing:.05em;cursor:pointer;white-space:nowrap;transition:.2s}
+.reseller-link-btn:hover:not(:disabled){transform:translateY(-1px);background:rgba(255,255,255,.12)}
+.reseller-link-btn:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:560px){.reseller-access-card{align-items:flex-start;flex-direction:column}.reseller-link-btn{width:100%}}

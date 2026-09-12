@@ -148,6 +148,11 @@ function renderAdmin(){
         <button type="button" class="app-delete" title="Hapus aplikasi" onclick="deleteApp(${ai})">×</button>
       </div>
       <input class="aa-desc" data-ai="${ai}" placeholder="Deskripsi singkat (mis. Basic • VIP)" value="${esc(a.description)}">
+      <div class="reseller-link-edit">
+        <label class="note">LINK AKSES RESELLER</label>
+        <input class="ar-link" data-ai="${ai}" type="url" placeholder="https://link-yang-admin-berikan.com/..." value="${esc(a.resellerLink||"")}">
+        <small>Link ini akan muncul di Panel Reseller, bukan sebagai harga khusus.</small>
+      </div>
       <div class="tier-edit-list" data-ai="${ai}"></div>
       <button type="button" class="add-tier-btn" onclick="addTier(${ai})">+ Tambah Tier</button>
     `;
@@ -167,6 +172,7 @@ function syncFromDOM(){
   document.querySelectorAll(".aa-cat").forEach(e=>apps[e.dataset.ai].category=e.value);
   document.querySelectorAll(".aa-icon").forEach(e=>apps[e.dataset.ai].icon=e.value);
   document.querySelectorAll(".aa-desc").forEach(e=>apps[e.dataset.ai].description=e.value);
+  document.querySelectorAll(".ar-link").forEach(e=>apps[e.dataset.ai].resellerLink=e.value.trim());
   document.querySelectorAll(".an").forEach(e=>apps[e.dataset.ai].tiers[e.dataset.i][0]=e.value);
   document.querySelectorAll(".ap").forEach(e=>apps[e.dataset.ai].tiers[e.dataset.i][1]=e.value);
   document.querySelectorAll(".as").forEach(e=>apps[e.dataset.ai].tiers[e.dataset.i][2]=e.checked);
@@ -174,7 +180,7 @@ function syncFromDOM(){
 
 function addNewApp(){
   syncFromDOM();
-  apps.push({id:"app-"+Date.now(),name:"",icon:"?",category:"",description:"",tiers:[["TIER BARU","Rp0",true]]});
+  apps.push({id:"app-"+Date.now(),name:"",icon:"?",category:"",description:"",resellerLink:"",tiers:[["TIER BARU","Rp0",true]]});
   renderAdmin();
   const sections=document.querySelectorAll(".admin-section");
   sections[sections.length-1]?.scrollIntoView({behavior:"smooth",block:"center"});
@@ -247,24 +253,45 @@ function renderResellerPanel(){
   const list=document.getElementById("resellerList");
   list.innerHTML="";
   const rows=[];
-  apps.forEach(a=>{
-    a.tiers.forEach(t=>{
-      if(String(t[0]).toUpperCase().includes("RESELLER")){
-        rows.push({app:a.name,tier:t[0],price:t[1],stock:t[2]});
-      }
-    });
+  apps.forEach((a,ai)=>{
+    const resellerTier=a.tiers.find(t=>String(t[0]).toUpperCase().includes("RESELLER"));
+    if(resellerTier){
+      rows.push({app:a.name||"Produk", link:a.resellerLink||"", stock:resellerTier[2], ai});
+    }
   });
   if(!rows.length){
-    list.innerHTML=`<p class="note">Belum ada tier khusus reseller yang tersedia saat ini.</p>`;
+    list.innerHTML=`<p class="note">Belum ada akses reseller yang tersedia saat ini.</p>`;
     return;
   }
   rows.forEach(r=>{
     const el=document.createElement("div");
-    el.className="tier";
-    el.style.cursor="default";
-    el.innerHTML=`<span>${esc(r.app)} — ${esc(r.tier)}</span><span class="tier-price">${esc(r.price)}${r.stock?"":" • HABIS"}</span>`;
+    el.className="reseller-access-card";
+    el.innerHTML=`
+      <div class="reseller-access-info">
+        <span class="reseller-access-title">${esc(r.app)}</span>
+        <span class="reseller-access-status">${r.stock ? "AKSES TERSEDIA" : "AKSES NONAKTIF"}</span>
+      </div>
+      <button class="reseller-link-btn" ${r.stock && r.link ? `onclick="openResellerLink(${r.ai})"` : "disabled"}>
+        ${r.stock && r.link ? "BUKA LINK AKSES ↗" : "LINK BELUM DIBERIKAN"}
+      </button>`;
     list.appendChild(el);
   });
+}
+
+function openResellerLink(ai){
+  const a=apps[ai];
+  const link=(a?.resellerLink||"").trim();
+  if(!link){
+    alert("Link akses belum diberikan admin.");
+    return;
+  }
+  try{
+    const u=new URL(link);
+    if(!/^https?:$/.test(u.protocol)) throw new Error("invalid");
+    window.open(u.href,"_blank","noopener,noreferrer");
+  }catch(e){
+    alert("Link akses reseller belum valid. Silakan hubungi admin.");
+  }
 }
 
 function confirmPayment(){
