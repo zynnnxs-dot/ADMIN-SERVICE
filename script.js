@@ -425,15 +425,16 @@ if(introSection && portalEl){
 
 renderProductGrid();
 
-/* ===== THEME TOGGLE (ECLIPSE TRANSITION) ===== */
+/* ===== THEME TOGGLE (ZIPPER TRANSITION) ===== */
 const themeOverlay = document.getElementById("themeOverlay");
 const themeToggleBtn = document.getElementById("themeToggleBtn");
-const ECLIPSE_GROW_MS = 620;
-const ECLIPSE_HOLD_MS = 40;
-const ECLIPSE_SHRINK_MS = 540;
-const ZIP_MS = ECLIPSE_GROW_MS + ECLIPSE_HOLD_MS + ECLIPSE_SHRINK_MS;
+const ZIP_CLOSE_MS = 520;
+const ZIP_SWAP_MS = 90;
+const ZIP_OPEN_MS = 520;
+const ZIP_TOTAL_MS = ZIP_CLOSE_MS + ZIP_SWAP_MS + ZIP_OPEN_MS;
 const HERO_VIDEO_LIGHT = "hero-light.mp4";
 const HERO_VIDEO_DARK = "hero.mp4";
+let themeTransitionBusy = false;
 
 function updateHeroVideoForTheme(theme){
   const source = document.getElementById("heroVideoSource");
@@ -448,7 +449,9 @@ function updateHeroVideoForTheme(theme){
 }
 
 function updateThemeButtonLabel(theme){
-  if(themeToggleBtn) themeToggleBtn.textContent = theme === "light" ? "MODE GELAP" : "MODE TERANG";
+  if(!themeToggleBtn) return;
+  const icon = theme === "light" ? "☾" : "☼";
+  themeToggleBtn.innerHTML = `${icon} <span>${theme === "light" ? "MODE GELAP" : "MODE TERANG"}</span>`;
 }
 
 function setTheme(theme){
@@ -459,23 +462,29 @@ function setTheme(theme){
 }
 
 function toggleTheme(){
+  if(themeTransitionBusy) return;
   const next = document.body.getAttribute("data-theme") === "light" ? "dark" : "light";
   if(!themeOverlay){ setTheme(next); return; }
 
-  // Titik asal cakram = posisi tombol toggle, biar kerasa "meletus" dari sana
-  if(themeToggleBtn){
-    const r = themeToggleBtn.getBoundingClientRect();
-    themeOverlay.style.setProperty("--ex", (r.left + r.width/2) + "px");
-    themeOverlay.style.setProperty("--ey", (r.top + r.height/2) + "px");
-    themeToggleBtn.classList.add("spin");
-    setTimeout(()=>{ themeToggleBtn.classList.remove("spin"); }, 500);
-  }
+  themeTransitionBusy = true;
+  themeOverlay.className = "zipper-overlay";
+  themeOverlay.classList.add(next === "light" ? "to-light" : "to-dark", "zip-closing");
+  themeOverlay.setAttribute("aria-hidden", "false");
+  if(themeToggleBtn) themeToggleBtn.classList.add("zip-active");
 
-  themeOverlay.classList.remove("to-light","to-dark");
-  themeOverlay.classList.add("show", next === "light" ? "to-light" : "to-dark");
-  // Ganti tema pas cakram sudah menutup penuh layar (tersembunyi total)
-  setTimeout(()=>{ setTheme(next); }, 560);
-  setTimeout(()=>{ themeOverlay.classList.remove("show","to-light","to-dark"); }, ZIP_MS);
+  // Saat resleting sudah tertutup penuh, baru ganti skin di bawahnya.
+  setTimeout(()=>{
+    setTheme(next);
+    themeOverlay.classList.remove("zip-closing");
+    themeOverlay.classList.add("zip-opening");
+  }, ZIP_CLOSE_MS + ZIP_SWAP_MS);
+
+  setTimeout(()=>{
+    themeOverlay.className = "zipper-overlay";
+    themeOverlay.setAttribute("aria-hidden", "true");
+    if(themeToggleBtn) themeToggleBtn.classList.remove("zip-active");
+    themeTransitionBusy = false;
+  }, ZIP_TOTAL_MS + ZIP_SWAP_MS);
 }
 
 (function initTheme(){
