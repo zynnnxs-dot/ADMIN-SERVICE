@@ -170,35 +170,43 @@
     <button class="close" onclick="closeAdmin()">×</button>
     <div class="eyebrow">DASHBOARD</div>
     <h2>NDREX ADMIN</h2>
-    <div id="adminProducts"></div>
-    <button type="button" class="add-app-btn" onclick="addNewApp()">+ TAMBAH APLIKASI</button>
-    <div class="admin-section">
-      <div class="admin-app-head" style="margin-bottom:0">
-        <div class="admin-app-fields">
-          <label class="note" style="text-align:left;margin-bottom:8px">PASSWORD PANEL RESELLER</label>
-          <input id="resellerPasswordInput" class="reseller-password-input" placeholder="Password akses reseller" value="">
-        </div>
-      </div>
-    </div>
-    
-<!-- NDREX V27 — social links editor inside Admin -->
-<div class="ndrex-social-settings">
-  <div class="ndrex-social-settings-title">SOSIAL MEDIA</div>
-  <div class="ndrex-social-settings-sub">Atur link yang tampil di popup sosial media.</div>
-  <div class="ndrex-social-grid">
-    <input class="admin-input ndrex-social-url" data-social-index="0" type="url" placeholder="Instagram — https://...">
-    <input class="admin-input ndrex-social-url" data-social-index="1" type="url" placeholder="TikTok — https://...">
-    <input class="admin-input ndrex-social-url" data-social-index="2" type="url" placeholder="WhatsApp — https://...">
-    <input class="admin-input ndrex-social-url" data-social-index="3" type="url" placeholder="Telegram — https://...">
-  </div>
-  <button type="button" class="copy-btn full" id="ndrexSocialSave">SIMPAN LINK</button>
-  <div id="ndrexSocialSaved" class="saved"></div>
-</div>
 
-<button class="main-btn" onclick="saveAdminData()">SIMPAN PERUBAHAN</button>
-    <button class="copy-btn full" onclick="resetAdminData()">RESET DEFAULT</button>
-    <div id="adminSaved" class="saved"></div>
-    <p class="note">Admin demo ini menyimpan data di browser (localStorage). Password demo: <b>ndrex123</b>.</p>
+    <div class="admin-tabs">
+      <button type="button" class="admin-tab active" data-tab="products" onclick="switchAdminTab('products')">Aplikasi</button>
+      <button type="button" class="admin-tab" data-tab="reseller" onclick="switchAdminTab('reseller')">Reseller</button>
+      <button type="button" class="admin-tab" data-tab="social" onclick="switchAdminTab('social')">Sosial Media</button>
+    </div>
+
+    <div class="admin-panel" data-panel="products">
+      <input id="adminSearch" class="admin-input admin-search" type="text" placeholder="Cari aplikasi..." oninput="renderAdmin()">
+      <div id="adminProducts"></div>
+      <button type="button" class="add-app-btn" onclick="addNewApp()">+ TAMBAH APLIKASI</button>
+    </div>
+
+    <div class="admin-panel" data-panel="reseller" hidden>
+      <label class="note" style="text-align:left;margin-bottom:8px;display:block">PASSWORD PANEL RESELLER</label>
+      <input id="resellerPasswordInput" class="reseller-password-input" placeholder="Password akses reseller" value="">
+      <p class="note" style="text-align:left;margin-top:8px">Reseller pakai password ini untuk login, lalu melihat link akses yang kamu isi di tiap aplikasi (tab Aplikasi).</p>
+    </div>
+
+    <div class="admin-panel" data-panel="social" hidden>
+      <div class="ndrex-social-settings-sub" style="margin-bottom:10px">Atur link yang tampil di popup sosial media.</div>
+      <div class="ndrex-social-grid">
+        <input class="admin-input ndrex-social-url" data-social-index="0" type="url" placeholder="Instagram — https://...">
+        <input class="admin-input ndrex-social-url" data-social-index="1" type="url" placeholder="TikTok — https://...">
+        <input class="admin-input ndrex-social-url" data-social-index="2" type="url" placeholder="WhatsApp — https://...">
+        <input class="admin-input ndrex-social-url" data-social-index="3" type="url" placeholder="Telegram — https://...">
+      </div>
+      <button type="button" class="copy-btn full" id="ndrexSocialSave">SIMPAN LINK</button>
+      <div id="ndrexSocialSaved" class="saved"></div>
+    </div>
+
+    <div class="admin-footer">
+      <button class="main-btn" onclick="saveAdminData()">SIMPAN PERUBAHAN</button>
+      <button class="copy-btn full" onclick="resetAdminData()">RESET DEFAULT</button>
+      <div id="adminSaved" class="saved"></div>
+      <p class="note">Admin demo ini menyimpan data di browser (localStorage). Password demo: <b>ndrex123</b>.</p>
+    </div>
   </div>
 </div>
 

@@ -160,45 +160,78 @@ function openAdminLogin(){document.getElementById("adminPassword").value="";docu
 function closeAdminLogin(){document.getElementById("adminLoginModal").classList.remove("show")}
 function loginAdmin(){if(document.getElementById("adminPassword").value!=="ndrex123"){document.getElementById("adminError").textContent="Password salah.";return}admin=true;closeAdminLogin();renderAdmin();modal("adminModal")}
 
+let adminExpanded=new Set(),adminTab="products";
+
+function switchAdminTab(tab){
+  adminTab=tab;
+  document.querySelectorAll(".admin-tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
+  document.querySelectorAll(".admin-panel").forEach(p=>p.hidden=p.dataset.panel!==tab);
+}
+
+function toggleAppCard(id){
+  if(adminExpanded.has(id)) adminExpanded.delete(id); else adminExpanded.add(id);
+  renderAdmin();
+}
+
 function renderAdmin(){
   const c=document.getElementById("adminProducts");
-  c.innerHTML="";
   const rpInput=document.getElementById("resellerPasswordInput");
   if(rpInput) rpInput.value=getResellerPassword();
+  const q=(document.getElementById("adminSearch")?.value||"").trim().toLowerCase();
+  const list=apps.filter(a=>!q||a.name.toLowerCase().includes(q)||a.category.toLowerCase().includes(q));
+  c.innerHTML="";
   if(!apps.length){
     c.innerHTML=`<p class="note">Belum ada aplikasi. Klik "+ Tambah Aplikasi" di bawah.</p>`;
+  }else if(!list.length){
+    c.innerHTML=`<p class="note">Tidak ada aplikasi yang cocok dengan pencarian.</p>`;
   }
-  apps.forEach((a,ai)=>{
+  list.forEach((a)=>{
+    const ai=apps.indexOf(a);
+    const open=adminExpanded.has(a.id);
+    const tiers=Array.isArray(a.tiers)?a.tiers:[];
+    const active=tiers.filter(x=>x&&x[2]).length;
+    const stockLabel=!tiers.length||active===0?"HABIS":(active<tiers.length?"TERBATAS":"TERSEDIA");
     const s=document.createElement("div");
-    s.className="admin-section";
+    s.className="admin-section"+(open?"":" collapsed");
     s.innerHTML=`
-      <div class="admin-app-head">
+      <div class="admin-app-head admin-card-toggle" onclick="toggleAppCard('${a.id}')">
         <div class="admin-icon-preview">${esc((a.icon||"?").slice(0,2))}</div>
-        <div class="admin-app-fields">
-          <input class="aa-name" data-ai="${ai}" placeholder="Nama aplikasi" value="${esc(a.name)}">
-          <div class="admin-app-sub">
-            <input class="aa-cat" data-ai="${ai}" placeholder="Kategori" value="${esc(a.category)}">
-            <input class="aa-icon" data-ai="${ai}" placeholder="Ikon" maxlength="2" value="${esc(a.icon)}">
-          </div>
+        <div class="admin-app-fields admin-card-summary">
+          <b>${esc(a.name||"(Tanpa nama)")}</b>
+          <div class="admin-app-sub-view"><span>${esc(a.category||"-")}</span><span class="admin-stock-chip stock-${stockLabel.toLowerCase()}">${stockLabel}</span></div>
         </div>
-        <button type="button" class="app-delete" title="Hapus aplikasi" onclick="deleteApp(${ai})">×</button>
+        <span class="admin-card-chevron">${open?"▲":"▼"}</span>
       </div>
-      <input class="aa-desc" data-ai="${ai}" placeholder="Deskripsi singkat (mis. Basic • VIP)" value="${esc(a.description)}">
-      <div class="reseller-link-edit">
-        <label class="note">LINK AKSES RESELLER</label>
-        <input class="ar-link" data-ai="${ai}" type="url" placeholder="https://link-yang-admin-berikan.com/..." value="${esc(a.resellerLink||"")}">
-        <small>Link ini akan muncul di Panel Reseller, bukan sebagai harga khusus.</small>
+      <div class="admin-card-body"${open?"":' style="display:none"'}>
+        <div class="admin-app-head">
+          <div class="admin-app-fields">
+            <input class="aa-name" data-ai="${ai}" placeholder="Nama aplikasi" value="${esc(a.name)}">
+            <div class="admin-app-sub">
+              <input class="aa-cat" data-ai="${ai}" placeholder="Kategori" value="${esc(a.category)}">
+              <input class="aa-icon" data-ai="${ai}" placeholder="Ikon" maxlength="2" value="${esc(a.icon)}">
+            </div>
+          </div>
+          <button type="button" class="app-delete" title="Hapus aplikasi" onclick="deleteApp(${ai})">×</button>
+        </div>
+        <input class="aa-desc" data-ai="${ai}" placeholder="Deskripsi singkat (mis. Basic • VIP)" value="${esc(a.description)}">
+        <div class="reseller-link-edit">
+          <label class="note">LINK AKSES RESELLER</label>
+          <input class="ar-link" data-ai="${ai}" type="url" placeholder="https://link-yang-admin-berikan.com/..." value="${esc(a.resellerLink||"")}">
+          <small>Link ini akan muncul di Panel Reseller, bukan sebagai harga khusus.</small>
+        </div>
+        <div class="tier-edit-list" data-ai="${ai}"></div>
+        <button type="button" class="add-tier-btn" onclick="addTier(${ai})">+ Tambah Tier</button>
       </div>
-      <div class="tier-edit-list" data-ai="${ai}"></div>
-      <button type="button" class="add-tier-btn" onclick="addTier(${ai})">+ Tambah Tier</button>
     `;
-    const tierWrap=s.querySelector(".tier-edit-list");
-    a.tiers.forEach((x,i)=>{
-      const row=document.createElement("div");
-      row.className="admin-row";
-      row.innerHTML=`<input class="an" data-ai="${ai}" data-i="${i}" value="${esc(x[0])}" placeholder="Nama tier"><input class="ap" data-ai="${ai}" data-i="${i}" value="${esc(x[1])}" placeholder="Harga"><label class="admin-stock"><input type="checkbox" class="as" data-ai="${ai}" data-i="${i}" ${x[2]?"checked":""}> STOK</label><button type="button" class="tier-delete" title="Hapus tier" onclick="deleteTier(${ai},${i})">×</button>`;
-      tierWrap.appendChild(row);
-    });
+    if(open){
+      const tierWrap=s.querySelector(".tier-edit-list");
+      a.tiers.forEach((x,i)=>{
+        const row=document.createElement("div");
+        row.className="admin-row";
+        row.innerHTML=`<input class="an" data-ai="${ai}" data-i="${i}" value="${esc(x[0])}" placeholder="Nama tier"><input class="ap" data-ai="${ai}" data-i="${i}" value="${esc(x[1])}" placeholder="Harga"><label class="admin-stock"><input type="checkbox" class="as" data-ai="${ai}" data-i="${i}" ${x[2]?"checked":""}> STOK</label><button type="button" class="tier-delete" title="Hapus tier" onclick="deleteTier(${ai},${i})">×</button>`;
+        tierWrap.appendChild(row);
+      });
+    }
     c.appendChild(s);
   });
 }
@@ -216,7 +249,9 @@ function syncFromDOM(){
 
 function addNewApp(){
   syncFromDOM();
-  apps.push({id:"app-"+Date.now(),name:"",icon:"?",category:"",description:"",resellerLink:"",tiers:[["TIER BARU","Rp0",true]]});
+  const id="app-"+Date.now();
+  apps.push({id,name:"",icon:"?",category:"",description:"",resellerLink:"",tiers:[["TIER BARU","Rp0",true]]});
+  adminExpanded.add(id);
   renderAdmin();
   const sections=document.querySelectorAll(".admin-section");
   sections[sections.length-1]?.scrollIntoView({behavior:"smooth",block:"center"});
@@ -224,6 +259,9 @@ function addNewApp(){
 
 function deleteApp(ai){
   syncFromDOM();
+  const a=apps[ai];
+  if(!confirm(`Hapus aplikasi "${a.name||"ini"}"? Tindakan ini tidak bisa dibatalkan.`)) return;
+  adminExpanded.delete(a.id);
   apps.splice(ai,1);
   renderAdmin();
 }
@@ -253,7 +291,9 @@ function saveAdminData(){
 }
 
 function resetAdminData(){
+  if(!confirm("Reset semua data aplikasi ke default? Perubahan yang belum disimpan akan hilang.")) return;
   apps=structuredClone(defaultApps);
+  adminExpanded=new Set();
   localStorage.setItem("ndrex_apps",JSON.stringify(apps));
   renderAdmin();
   renderProductGrid();
