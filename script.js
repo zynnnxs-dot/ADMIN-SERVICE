@@ -428,9 +428,9 @@ renderProductGrid();
 /* ===== THEME TOGGLE (ECLIPSE TRANSITION) ===== */
 const themeOverlay = document.getElementById("themeOverlay");
 const themeToggleBtn = document.getElementById("themeToggleBtn");
-const ECLIPSE_GROW_MS = 420;   // waktu cakram menutup penuh
-const ECLIPSE_HOLD_MS = 160;   // "totalitas" — layar tertutup penuh
-const ECLIPSE_SHRINK_MS = 420; // cakram menyusut, tampilan baru kelihatan
+const ECLIPSE_GROW_MS = 480;   // waktu cakram menutup penuh (dengan sedikit overshoot)
+const ECLIPSE_HOLD_MS = 200;   // "totalitas" — layar tertutup penuh
+const ECLIPSE_SHRINK_MS = 460; // cakram menyusut, tampilan baru kelihatan
 const ZIP_MS = ECLIPSE_GROW_MS + ECLIPSE_HOLD_MS + ECLIPSE_SHRINK_MS;
 const HERO_VIDEO_LIGHT = "hero-light.mp4";
 const HERO_VIDEO_DARK = "hero.mp4";
@@ -474,7 +474,7 @@ function toggleTheme(){
   themeOverlay.classList.remove("to-light","to-dark");
   themeOverlay.classList.add("show", next === "light" ? "to-light" : "to-dark");
   // Ganti tema pas cakram sudah menutup penuh layar (tersembunyi total)
-  setTimeout(()=>{ setTheme(next); }, ECLIPSE_GROW_MS * 0.6);
+  setTimeout(()=>{ setTheme(next); }, ECLIPSE_GROW_MS * 0.62);
   setTimeout(()=>{ themeOverlay.classList.remove("show","to-light","to-dark"); }, ZIP_MS);
 }
 
