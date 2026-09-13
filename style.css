@@ -1,12 +1,21 @@
 :root{
-  --bg:#03050b;--bg-grad2:#161c3a;--text:#f4f6ff;--muted:#7f879a;--faint:#4e566a;
+  --bg:#03050b;--bg-grad2:#161c3a;--text:#f4f6ff;--muted:#949bb2;--faint:#565e75;
   --border:#1c2130;--panel:#ffffff06;--panel-strong:#ffffff12;--modal-bg:#080b14;
-  --accent:#aeb8ff;--accent-wash:rgba(157,168,255,.086);--accent-border:rgba(157,168,255,.33);
+  --accent:#aeb8ff;--accent2:#5ee0d0;--accent-wash:rgba(157,168,255,.086);--accent-border:rgba(157,168,255,.33);
+  --accent-grad:linear-gradient(135deg,#c2caff,#7fe3d4);
+  --danger:#ff8a8a;--danger-wash:rgba(255,92,92,.1);--danger-border:rgba(255,92,92,.32);
+  --success:#3fd6a0;--success-wash:rgba(63,214,160,.1);--success-border:rgba(63,214,160,.34);
+  --r-sm:10px;--r-md:14px;--r-lg:20px;--r-xl:26px;
+  --shadow-sm:0 8px 22px -12px rgba(0,0,0,.5);--shadow-md:0 18px 44px -18px rgba(0,0,0,.6);
 }
 body[data-theme="light"]{
   --bg:#f3f4fb;--bg-grad2:#e3e7fb;--text:#14151f;--muted:#5a5f74;--faint:#8b90a3;
   --border:#dde0ee;--panel:#00000006;--panel-strong:#0000000e;--modal-bg:#ffffff;
-  --accent:#4a52c9;--accent-wash:rgba(74,82,201,.08);--accent-border:rgba(74,82,201,.35);
+  --accent:#4a52c9;--accent2:#0f9d86;--accent-wash:rgba(74,82,201,.08);--accent-border:rgba(74,82,201,.35);
+  --accent-grad:linear-gradient(135deg,#4a52c9,#0f9d86);
+  --danger:#d43f4f;--danger-wash:rgba(212,63,79,.08);--danger-border:rgba(212,63,79,.3);
+  --success:#0f9d6f;--success-wash:rgba(15,157,111,.08);--success-border:rgba(15,157,111,.3);
+  --shadow-sm:0 8px 22px -14px rgba(20,21,31,.3);--shadow-md:0 18px 44px -20px rgba(20,21,31,.35);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{height:100%;overscroll-behavior-y:none}
@@ -386,3 +395,91 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
   .top-btn{padding:0 5px;font-size:7px}
   .top-btn.theme-toggle span{font-size:6.5px}
 }
+
+/* ================================================================
+   REDESIGN PASS — visual refresh (layout/markup tetap sama, cuma
+   styling & hierarki visual yang dirapikan)
+   ================================================================ */
+
+/* -- Focus states aksesibilitas -- */
+button:focus-visible,input:focus-visible,.product-card:focus-visible,.tier:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;
+}
+.admin-input:focus,input.admin-input:focus{
+  border-color:var(--accent-border);box-shadow:0 0 0 3px var(--accent-wash);
+}
+
+/* -- Hierarki tombol: primary (solid gradient) vs secondary (outline) vs sukses/bahaya -- */
+.main-btn{
+  border:none;background:var(--accent-grad);color:#0a0d18;
+  border-radius:var(--r-sm);padding:14px;font-size:10.5px;font-weight:800;
+  letter-spacing:1.4px;box-shadow:var(--shadow-sm);
+  transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+}
+body[data-theme="light"] .main-btn{color:#fff}
+.main-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px -12px rgba(120,140,255,.45);filter:brightness(1.04)}
+.main-btn:active{transform:translateY(0) scale(.98)}
+
+.copy-btn.full,#ndrexSocialSave,button.copy-btn{
+  border:1px solid var(--border);background:var(--panel-strong);color:var(--text);
+  border-radius:var(--r-sm);font-weight:700;letter-spacing:1px;
+  transition:transform .2s ease,border-color .2s ease,background .2s ease;
+}
+.copy-btn.full:hover,#ndrexSocialSave:hover{border-color:var(--accent-border);background:var(--accent-wash);transform:translateY(-1px)}
+
+.wa-btn{
+  border:1px solid var(--success-border)!important;background:var(--success-wash)!important;
+  color:var(--success)!important;font-weight:800!important;
+}
+.wa-btn:hover{background:var(--success)!important;color:#06251a!important;box-shadow:0 14px 30px -14px rgba(63,214,160,.5)}
+body[data-theme="light"] .wa-btn:hover{color:#fff!important}
+
+.add-app-btn{background:var(--panel-strong);border:1px dashed var(--accent-border);color:var(--accent)}
+.add-app-btn:hover{background:var(--accent-wash)}
+
+.app-delete,.tier-delete{transition:transform .2s ease,background .2s ease}
+.app-delete:hover{background:var(--danger-wash);border-color:var(--danger-border);transform:scale(1.05)}
+.tier-delete:hover{color:var(--danger);border-color:var(--danger-border);background:var(--danger-wash)}
+
+/* -- Kartu produk: sedikit lebih premium, hover lebih hidup -- */
+.product-card{
+  border-color:var(--border);
+  box-shadow:var(--shadow-sm);
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .25s ease,box-shadow .25s ease;
+}
+.product-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
+.product-card h3{letter-spacing:.1px}
+.product-card p{opacity:.92}
+
+/* Di layar lebih lebar, grid produk jadi grid rapi (bukan cuma scroll horizontal) */
+@media(min-width:820px){
+  .product-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    overflow:visible;gap:20px;
+  }
+  .product-card{flex:none;aspect-ratio:auto;min-height:250px}
+}
+
+/* -- Modal: tipografi & spacing lebih lega, konsisten -- */
+.modal-box{padding:32px 28px;border-radius:var(--r-lg);box-shadow:var(--shadow-md)}
+.modal-box h2{letter-spacing:.2px}
+.close{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;transition:background .2s ease,color .2s ease}
+.close:hover{background:var(--panel-strong);color:var(--text)}
+.tier{border-radius:var(--r-sm);transition:transform .2s ease,border-color .2s ease,background .2s ease}
+.tier:hover{border-color:var(--accent-border);background:var(--accent-wash);transform:translateX(2px)}
+
+/* -- Admin dashboard: section lebih jelas kepisah, label konsisten -- */
+.admin-section{box-shadow:var(--shadow-sm)}
+.admin-app-fields label,.admin-section>.note{text-transform:uppercase;letter-spacing:1.2px}
+.aa-name:focus,.aa-desc:focus,.admin-app-sub input:focus,.admin-row input:focus{
+  border-color:var(--accent-border);box-shadow:0 0 0 3px var(--accent-wash);outline:none;
+}
+.admin-box h2{margin-bottom:6px}
+.admin-box>.eyebrow+h2+#adminProducts{margin-top:18px}
+#adminProducts{margin-top:18px;display:grid;gap:14px}
+
+/* -- Topbar: sedikit lebih premium saat discroll (opsional, aman kalau JS gak isi class) -- */
+.top-actions{box-shadow:var(--shadow-sm)}
+
+/* -- Footer lebih hidup dikit -- */
+footer{opacity:.75}
