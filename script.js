@@ -458,9 +458,14 @@ function setTheme(theme){
 function toggleTheme(){
   const next = document.body.getAttribute("data-theme") === "light" ? "dark" : "light";
   if(!zipperOverlay){ setTheme(next); return; }
-  zipperOverlay.classList.add("show");
+  zipperOverlay.classList.remove("to-light","to-dark");
+  zipperOverlay.classList.add("show", next === "light" ? "to-light" : "to-dark");
+  if(themeToggleBtn){
+    themeToggleBtn.classList.add("spin");
+    setTimeout(()=>{ themeToggleBtn.classList.remove("spin"); }, 500);
+  }
   setTimeout(()=>{ setTheme(next); }, 60);
-  setTimeout(()=>{ zipperOverlay.classList.remove("show"); }, ZIP_MS);
+  setTimeout(()=>{ zipperOverlay.classList.remove("show","to-light","to-dark"); }, ZIP_MS);
 }
 
 (function initTheme(){

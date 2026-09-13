@@ -483,3 +483,40 @@ body[data-theme="light"] .wa-btn:hover{color:#fff!important}
 
 /* -- Footer lebih hidup dikit -- */
 footer{opacity:.75}
+
+/* ================================================================
+   ZIPPER TRANSITION — kasih beda rasa antara buka-ke-terang vs
+   buka-ke-gelap, biar gak generik dua arah.
+   ================================================================ */
+.zipper-overlay{--zip-glow:rgba(174,184,255,.6)}
+.zipper-overlay.to-light{--zip-glow:rgba(255,232,168,.85)}
+.zipper-overlay.to-dark{--zip-glow:rgba(139,147,255,.55)}
+
+/* Ledakan cahaya di garis tengah pas resleting mulai kebuka */
+.zip-teeth::before{
+  content:"";position:absolute;inset:-70px -90px;pointer-events:none;
+  background:radial-gradient(circle,var(--zip-glow),transparent 68%);
+  opacity:0;filter:blur(3px);
+}
+.zipper-overlay.show .zip-teeth::before{
+  animation:zipGlowBurst .6s ease-out .46s forwards;
+}
+@keyframes zipGlowBurst{
+  0%{opacity:0;transform:scale(.5)}
+  40%{opacity:1;transform:scale(1.2)}
+  100%{opacity:0;transform:scale(2.1)}
+}
+
+/* Panel resleting: sedikit lebih terang mendekati garis tengah saat menuju tema terang,
+   biar kesan "membelah gelap jadi terang" lebih kena */
+.zipper-overlay.to-light .zip-panel.left{background:linear-gradient(100deg,#232a42 55%,#3a4468 100%)}
+.zipper-overlay.to-light .zip-panel.right{background:linear-gradient(280deg,#232a42 55%,#3a4468 100%)}
+
+/* Ikon toggle tema: kasih feedback putar singkat saat diklik */
+.theme-toggle{transition:transform .5s cubic-bezier(.3,.6,.2,1)}
+.theme-toggle.spin{transform:rotate(180deg)}
+
+@media (prefers-reduced-motion:reduce){
+  .zip-teeth::before{display:none}
+  .theme-toggle{transition:none}
+}
