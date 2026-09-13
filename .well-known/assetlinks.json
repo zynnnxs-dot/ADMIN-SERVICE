@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "app.vercel.ndrexsproject.twa",
+    "sha256_cert_fingerprints": ["11:D2:44:72:9E:A9:4F:48:F2:C9:9C:52:76:D0:CC:10:18:98:37:70:8A:28:74:FA:43:51:B3:32:FB:91:49:FE"]
+  }
+}]
