@@ -208,56 +208,57 @@ button, .intro { -webkit-tap-highlight-color:transparent; }
 }
 .zipper-overlay.to-light{--zip-bg:#f3f4fb}
 .zipper-overlay.to-dark{--zip-bg:#03050b}
-.zipper-panel{
-  position:absolute;top:0;bottom:0;width:50.5%;background:var(--zip-bg);
-  will-change:transform;box-shadow:0 0 70px rgba(0,0,0,.16);
+.slash-panel{position:absolute;inset:0;background:var(--zip-bg);will-change:transform}
+.slash-panel-a{
+  clip-path:polygon(0% 0%,100% 0%,82% 10%,88% 22%,68% 34%,76% 46%,54% 50%,60% 64%,38% 66%,44% 80%,20% 82%,26% 94%,0% 100%);
+  transform:translate(-70%,-70%);
 }
-.zipper-left{left:0;transform:translateX(-101%)}
-.zipper-right{right:0;transform:translateX(101%)}
-.zipper-track{
-  position:absolute;top:0;bottom:0;width:10px;opacity:0;
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,.72) 0 8px,
-    transparent 8px 15px
-  );
-  filter:drop-shadow(0 0 4px rgba(120,140,255,.25));
+.slash-panel-b{
+  clip-path:polygon(100% 100%,0% 100%,26% 94%,20% 82%,44% 80%,38% 66%,60% 64%,54% 50%,76% 46%,68% 34%,88% 22%,82% 10%,100% 0%);
+  transform:translate(70%,70%);
 }
-.zipper-track-left{left:calc(50% - 8px)}
-.zipper-track-right{right:calc(50% - 8px)}
-.zipper-pull{
-  position:absolute;left:50%;top:50%;width:42px;height:58px;
-  margin:-29px 0 0 -21px;border-radius:11px 11px 15px 15px;
-  background:linear-gradient(145deg,#e8ebff,#8e99db);
-  border:1px solid rgba(255,255,255,.8);
-  box-shadow:0 8px 25px rgba(0,0,0,.35),0 0 18px rgba(145,155,255,.35);
-  transform:translateY(-75vh);opacity:0;z-index:3;
+.slash-blade{
+  position:absolute;top:50%;left:50%;width:150vmax;height:6px;margin:-3px 0 0 -75vmax;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.9) 12%,#eef1ff 50%,rgba(255,255,255,.9) 88%,transparent 100%);
+  box-shadow:0 0 24px 6px rgba(170,185,255,.75);
+  transform:rotate(-42deg) scaleX(0);opacity:0;z-index:4;transform-origin:center center;
 }
-.zipper-pull:before{
-  content:"";position:absolute;left:50%;top:-20px;width:8px;height:25px;margin-left:-4px;
-  border-radius:99px;background:#b8c0f2;border:1px solid rgba(255,255,255,.55);
+.zipper-impact{
+  position:absolute;left:50%;top:50%;width:150px;height:150px;
+  margin:-75px 0 0 -75px;border-radius:50%;z-index:2;opacity:0;
+  background:radial-gradient(circle,rgba(200,208,255,.95) 0%,rgba(130,150,255,.4) 42%,transparent 72%);
+  filter:blur(2px);
 }
-.zipper-pull span{
-  position:absolute;left:9px;right:9px;top:10px;height:7px;border-radius:99px;
-  background:rgba(30,35,65,.35);box-shadow:0 12px 0 rgba(30,35,65,.22);
-}
-.zipper-overlay.zip-closing .zipper-left{animation:zipLeftClose .52s cubic-bezier(.76,0,.24,1) both}
-.zipper-overlay.zip-closing .zipper-right{animation:zipRightClose .52s cubic-bezier(.76,0,.24,1) both}
-.zipper-overlay.zip-closing .zipper-track{animation:zipTrackIn .52s ease-out both}
-.zipper-overlay.zip-closing .zipper-pull{animation:zipPullClose .52s cubic-bezier(.76,0,.24,1) both}
-.zipper-overlay.zip-opening .zipper-left{animation:zipLeftOpen .52s cubic-bezier(.76,0,.24,1) both}
-.zipper-overlay.zip-opening .zipper-right{animation:zipRightOpen .52s cubic-bezier(.76,0,.24,1) both}
-.zipper-overlay.zip-opening .zipper-track{animation:zipTrackOut .52s ease-in both}
-.zipper-overlay.zip-opening .zipper-pull{animation:zipPullOpen .52s cubic-bezier(.76,0,.24,1) both}
+.zipper-overlay.zip-closing .slash-panel-a{animation:slashInA .52s cubic-bezier(.65,0,.35,1) both}
+.zipper-overlay.zip-closing .slash-panel-b{animation:slashInB .52s cubic-bezier(.65,0,.35,1) both}
+.zipper-overlay.zip-closing .slash-blade{animation:bladeSweep .52s cubic-bezier(.2,.9,.2,1) both}
+.zipper-overlay.zip-closing .zipper-impact{animation:zipImpactClose .52s cubic-bezier(.2,.8,.2,1) both}
+.zipper-overlay.zip-opening .slash-panel-a{animation:slashOutA .52s cubic-bezier(.65,0,.35,1) both}
+.zipper-overlay.zip-opening .slash-panel-b{animation:slashOutB .52s cubic-bezier(.65,0,.35,1) both}
+.zipper-overlay.zip-opening .slash-blade{animation:bladeSweep .52s cubic-bezier(.2,.9,.2,1) both}
+.zipper-overlay.zip-opening .zipper-impact{animation:zipImpactOpen .52s cubic-bezier(.2,.8,.2,1) both}
 
-@keyframes zipLeftClose{from{transform:translateX(-101%)}to{transform:translateX(0)}}
-@keyframes zipRightClose{from{transform:translateX(101%)}to{transform:translateX(0)}}
-@keyframes zipLeftOpen{from{transform:translateX(0)}to{transform:translateX(-101%)}}
-@keyframes zipRightOpen{from{transform:translateX(0)}to{transform:translateX(101%)}}
-@keyframes zipTrackIn{0%{opacity:0}45%{opacity:.7}100%{opacity:1}}
-@keyframes zipTrackOut{0%{opacity:1}55%{opacity:.7}100%{opacity:0}}
-@keyframes zipPullClose{0%{transform:translateY(-75vh);opacity:0}20%{opacity:1}100%{transform:translateY(0);opacity:1}}
-@keyframes zipPullOpen{0%{transform:translateY(0);opacity:1}80%{opacity:1}100%{transform:translateY(75vh);opacity:0}}
+@keyframes slashInA{0%{transform:translate(-70%,-70%)}70%{transform:translate(2%,2%)}85%{transform:translate(-1%,-1%)}100%{transform:translate(0,0)}}
+@keyframes slashInB{0%{transform:translate(70%,70%)}70%{transform:translate(-2%,-2%)}85%{transform:translate(1%,1%)}100%{transform:translate(0,0)}}
+@keyframes slashOutA{0%{transform:translate(0,0)}15%{transform:translate(-2%,-2%)}100%{transform:translate(-70%,-70%)}}
+@keyframes slashOutB{0%{transform:translate(0,0)}15%{transform:translate(2%,2%)}100%{transform:translate(70%,70%)}}
+@keyframes bladeSweep{
+  0%{opacity:0;transform:rotate(-42deg) scaleX(0)}
+  10%{opacity:1;transform:rotate(-42deg) scaleX(1)}
+  24%{opacity:1;transform:rotate(-42deg) scaleX(1)}
+  40%{opacity:0;transform:rotate(-42deg) scaleX(1)}
+  100%{opacity:0;transform:rotate(-42deg) scaleX(1)}
+}
+@keyframes zipImpactClose{
+  0%,80%{opacity:0;transform:scale(.2)}
+  86%{opacity:1;transform:scale(.6)}
+  100%{opacity:0;transform:scale(2.6)}
+}
+@keyframes zipImpactOpen{
+  0%{opacity:1;transform:scale(.6)}
+  14%{opacity:1;transform:scale(1.4)}
+  30%,100%{opacity:0;transform:scale(2.2)}
+}
 
 @media (prefers-reduced-motion:reduce){
   .zipper-overlay *{animation:none!important}
